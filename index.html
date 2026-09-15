@@ -344,24 +344,35 @@ function handleExportCSV() {
   showToast("Đã xuất file CSV thành công!");
 }
 
-// ==== TRA TỪ TỰ ĐỘNG BẰNG FREE DICTIONARY API ====
+// ==== TRA TỪ TỰ ĐỘNG BẰNG FREE DICTIONARY API (TỐI ƯU TỐC ĐỘ + TIMEOUT) ====
 async function queryFreeDictionaryAPI(word) {
   try {
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(word)}`);
+    const cleanWord = word.trim().toLowerCase();
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 3000);
+
+    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(cleanWord)}`, {
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
     if (!res.ok) return null;
     const data = await res.json();
+    
     if (data && data.length > 0) {
       const entry = data[0];
       const phonetic = entry.phonetic || (entry.phonetics && entry.phonetics.find(p => p.text)?.text) || "";
       const meaningObj = entry.meanings && entry.meanings[0];
       const defObj = meaningObj && meaningObj.definitions && meaningObj.definitions[0];
-      const definition = defObj ? defObj.definition : "";
-      const example = defObj ? (defObj.example || "") : "";
-
-      return { phonetic, definition, example };
+      
+      return {
+        phonetic: phonetic,
+        definition: defObj ? defObj.definition : "",
+        example: defObj ? (defObj.example || "") : ""
+      };
     }
   } catch (e) {
-    console.error("Lỗi Dictionary API:", e);
+    // Tự động bỏ qua timeout/lỗi mạng để ứng dụng không bị dừng
   }
   return null;
 }
@@ -384,7 +395,7 @@ async function autoFetchDictionaryAPI() {
   }
 }
 
-// ==== ĐỒNG BỘ TỪ CHROME EXTENSION ====
+// ==== ĐỒNG BỘ SONG SONG TỪ EXTENSION ====
 function syncFromExtension(isManual = false) {
   if (isManual) showToast("Đang lấy từ từ Extension...");
   window.postMessage({ type: "REQUEST_EXTENSION_VOCAB" }, "*");
@@ -398,18 +409,25 @@ window.addEventListener("message", async (event) => {
       return;
     }
 
-    let addedCount = 0;
-    for (const item of rawVocab) {
-      const exists = state.vocab.find(v => v.term.toLowerCase() === item.word.toLowerCase());
-      if (!exists) {
-        // Tự động kéo định nghĩa từ Free Dictionary API
-        const apiData = await queryFreeDictionaryAPI(item.word);
+    const newItems = rawVocab.filter(item => 
+      !state.vocab.some(v => v.term.toLowerCase() === item.word.trim().toLowerCase())
+    );
 
-        state.vocab.unshift({
+    if (newItems.length === 0) {
+      showToast("Dữ liệu đã mới nhất!");
+      return;
+    }
+
+    showToast(`Đang tra ${newItems.length} từ cùng lúc...`);
+
+    const enrichedVocab = await Promise.all(
+      newItems.map(async (item) => {
+        const apiData = await queryFreeDictionaryAPI(item.word);
+        return {
           id: 'ext_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
-          term: item.word,
+          term: item.word.trim(),
           phonetic: apiData ? apiData.phonetic : "",
-          def: apiData ? apiData.definition : "Chưa có nghĩa (Sửa để bổ sung)",
+          def: apiData && apiData.definition ? apiData.definition : "Chưa có nghĩa (Sửa để bổ sung)",
           example: apiData && apiData.example ? apiData.example : (item.source ? `Nguồn: ${item.source}` : ""),
           group: 'Từ Extension',
           status: 'red',
@@ -417,19 +435,15 @@ window.addEventListener("message", async (event) => {
           lastReviewed: new Date().toISOString(),
           reviewCount: 0,
           nextReviewDate: new Date().toISOString()
-        });
-        addedCount++;
-      }
-    }
+        };
+      })
+    );
 
-    if (addedCount > 0) {
-      if (!state.groups.includes('Từ Extension')) state.groups.push('Từ Extension');
-      saveState();
-      renderVocabGrid();
-      showToast(`Đã đồng bộ ${addedCount} từ vựng từ Extension!`);
-    } else {
-      showToast("Dữ liệu đã mới nhất!");
-    }
+    state.vocab.unshift(...enrichedVocab);
+    if (!state.groups.includes('Từ Extension')) state.groups.push('Từ Extension');
+    saveState();
+    renderVocabGrid();
+    showToast(`Đã đồng bộ ${enrichedVocab.length} từ mới thành công!`);
   }
 });
 
