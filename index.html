@@ -407,7 +407,7 @@
 
 <script>
 // ==== CẤU HÌNH API APPS SCRIPT ====
-const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyQ46La_yi2jkX74NXePbzNii_4EBZ2KSMyroF8-MPG2znGu6QuwJ6rrOu0c9SBejH9/exec";
+const APPS_SCRIPT_URL = "https://script.google.com/macros/s/AKfycbyedl0IC82GXy6qDNEv8XOuLAH7gOjuKCT2UWyVt7r6N3y-WqYpZ9LUIFhNLY9Ne0qU/exec";
 
 const STATUS_COLORS = {
   red: { badgeBg: 'rgba(244, 63, 94, 0.1)', textColor: '#BE123C', dot: '#F43F5E', label: 'Chưa thuộc' },
@@ -439,6 +439,7 @@ function showToast(msg) {
 }
 
 // ==== HÀM ĐỒNG BỘ TỪ GOOGLE SHEET ====
+// ==== HÀM ĐỒNG BỘ TỪ GOOGLE SHEET ====
 async function fetchFromSheet(isManual = false) {
   if (isManual) showToast("Đang đồng bộ dữ liệu từ Sheet...");
   
@@ -450,23 +451,28 @@ async function fetchFromSheet(isManual = false) {
       let addedCount = 0;
       
       sheetData.forEach((row, index) => {
-        const wordTerm = row.Vocab ? row.Vocab.trim() : "";
+        // Hỗ trợ nhận diện linh hoạt các key từ Apps Script trả về
+        const wordTerm = (row.Vocab || row.vocab || row.word || "").trim();
         if(!wordTerm) return;
 
-        // Kiểm tra xem từ này đã tồn tại trong Web App chưa (để không ghi đè tiến độ học của user)
+        // Kiểm tra xem từ này đã tồn tại trong Web App chưa
         const exists = state.vocab.find(v => v.term.toLowerCase() === wordTerm.toLowerCase());
         
         if (!exists) {
+          const meaningVal = row.mean || row.meaning || "Chưa có nghĩa (Sửa để thêm)";
+          const sourceVal = row.source || row.group || "";
+          const dateVal = row.Date || row.date || new Date().toISOString();
+
           // Tạo object từ vựng mới
           state.vocab.unshift({
             id: 'sheet_' + Date.now() + '_' + index,
             term: wordTerm,
             phonetic: "",
-            def: row.mean || "Chưa có nghĩa (Sửa để thêm)",
-            example: row.source ? `Nguồn lưu: ${row.source}` : "",
+            def: meaningVal,
+            example: sourceVal ? `Nguồn lưu: ${sourceVal}` : "",
             group: 'Từ Extension',
             status: 'red',
-            dateAdded: row.Date || new Date().toISOString(),
+            dateAdded: dateVal,
             lastReviewed: new Date().toISOString(),
             reviewCount: 0,
             nextReviewDate: new Date().toISOString()
