@@ -56,8 +56,8 @@
           <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"/></svg>
         </div>
         <div class="min-w-0 flex-1">
-          <h4 class="font-bold text-sm text-slate-800 truncate">Học Viên</h4>
-          <p class="text-[11px] text-amber-800/70 font-semibold truncate">Free Dictionary API</p>
+          <h4 class="font-bold text-sm text-slate-800 truncate">Phuong Khang</h4>
+          <p class="text-[11px] text-amber-800/70 font-semibold truncate">Premium 👑</p>
         </div>
       </div>
 
@@ -225,7 +225,7 @@
       <div>
         <div class="flex justify-between items-center mb-1">
           <label class="block text-xs font-bold text-slate-700">Từ vựng *</label>
-          <button type="button" onclick="autoFetchDictionaryAPI()" class="text-[10px] text-amber-600 font-bold hover:underline flex items-center gap-1">📖 Tra Free Dictionary API</button>
+          <button type="button" onclick="autoFetchDictionaryAPI()" class="text-[10px] text-amber-600 font-bold hover:underline flex items-center gap-1">📖 Tra Tự Động (Multi-API)</button>
         </div>
         <input id="f-term" type="text" placeholder="Ví dụ: Ephemeral" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-semibold focus:ring-2 focus:ring-amber-400 focus:outline-none">
       </div>
@@ -234,7 +234,7 @@
         <input id="f-phonetic" type="text" placeholder="Ví dụ: /ɪˈfemərəl/" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:ring-2 focus:ring-amber-400 focus:outline-none">
       </div>
       <div>
-        <label class="block text-xs font-bold text-slate-700 mb-1">Nghĩa tiếng Việt *</label>
+        <label class="block text-xs font-bold text-slate-700 mb-1">Nghĩa/ meaning *</label>
         <input id="f-def" type="text" placeholder="Ví dụ: Ngắn ngủi, phù du" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-semibold focus:ring-2 focus:ring-amber-400 focus:outline-none">
       </div>
       <div>
@@ -344,36 +344,85 @@ function handleExportCSV() {
   showToast("Đã xuất file CSV thành công!");
 }
 
-// ==== TRA TỪ TỰ ĐỘNG BẰNG FREE DICTIONARY API (TỐI ƯU TỐC ĐỘ + TIMEOUT) ====
+// ==== TRA TỪ TỰ ĐỘNG BẰNG FREE DICTIONARY + DATAMUSE + MYMEMORY API ====
 async function queryFreeDictionaryAPI(word) {
+  const cleanWord = word.trim().toLowerCase();
+  if (!cleanWord) return null;
+
+  // 1. Ưu tiên 1: Free Dictionary API (Phiên âm + Định nghĩa chuẩn + Ví dụ)
   try {
-    const cleanWord = word.trim().toLowerCase();
     const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 3000);
+    const timeoutId = setTimeout(() => controller.abort(), 2500);
 
     const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(cleanWord)}`, {
       signal: controller.signal
     });
     clearTimeout(timeoutId);
 
-    if (!res.ok) return null;
-    const data = await res.json();
-    
-    if (data && data.length > 0) {
-      const entry = data[0];
-      const phonetic = entry.phonetic || (entry.phonetics && entry.phonetics.find(p => p.text)?.text) || "";
-      const meaningObj = entry.meanings && entry.meanings[0];
-      const defObj = meaningObj && meaningObj.definitions && meaningObj.definitions[0];
-      
-      return {
-        phonetic: phonetic,
-        definition: defObj ? defObj.definition : "",
-        example: defObj ? (defObj.example || "") : ""
-      };
+    if (res.ok) {
+      const data = await res.json();
+      if (data && data.length > 0) {
+        const entry = data[0];
+        const phonetic = entry.phonetic || (entry.phonetics && entry.phonetics.find(p => p.text)?.text) || "";
+        const meaningObj = entry.meanings && entry.meanings[0];
+        const defObj = meaningObj && meaningObj.definitions && meaningObj.definitions[0];
+        const definition = defObj ? defObj.definition : "";
+        const example = defObj ? (defObj.example || "") : "";
+
+        if (definition) {
+          return { phonetic, definition, example };
+        }
+      }
     }
   } catch (e) {
-    // Tự động bỏ qua timeout/lỗi mạng để ứng dụng không bị dừng
+    console.warn("Free Dictionary API không khả dụng, đang thử Datamuse API...", e);
   }
+
+  // 2. Dự phòng 1: Datamuse API (Tra cứu định nghĩa Tiếng Anh nhanh)
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 2500);
+
+    const resDatamuse = await fetch(`https://api.datamuse.com/words?sp=${encodeURIComponent(cleanWord)}&md=d`, {
+      signal: controller.signal
+    });
+    clearTimeout(timeoutId);
+
+    if (resDatamuse.ok) {
+      const dataDatamuse = await resDatamuse.json();
+      if (dataDatamuse && dataDatamuse.length > 0 && dataDatamuse[0].defs) {
+        // Datamuse trả về dạng "n\tdefinition" -> Cắt bỏ tiền tố từ loại
+        const rawDef = dataDatamuse[0].defs[0] || "";
+        const cleanDef = rawDef.includes("\t") ? rawDef.split("\t")[1] : rawDef;
+        if (cleanDef) {
+          return {
+            phonetic: "",
+            definition: cleanDef,
+            example: ""
+          };
+        }
+      }
+    }
+  } catch (e) {
+    console.warn("Datamuse API không khả dụng...", e);
+  }
+
+  // 3. Dự phòng 2: MyMemory API (Dịch nghĩa sang Tiếng Việt nếu cả 2 API trên không tìm thấy)
+  try {
+    const resTranslation = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(cleanWord)}&langpair=en|vi`);
+    if (resTranslation.ok) {
+      const transData = await resTranslation.json();
+      const translatedText = transData?.responseData?.translatedText;
+      if (translatedText && translatedText.toLowerCase() !== cleanWord) {
+        return {
+          phonetic: "",
+          definition: translatedText,
+          example: ""
+        };
+      }
+    }
+  } catch (e) {}
+
   return null;
 }
 
@@ -383,19 +432,19 @@ async function autoFetchDictionaryAPI() {
     showToast("Vui lòng nhập từ tiếng Anh!");
     return;
   }
-  showToast("Đang tra Free Dictionary API...");
+  showToast("Đang tra từ tự động...");
   const info = await queryFreeDictionaryAPI(term);
   if (info) {
     if (info.phonetic) document.getElementById('f-phonetic').value = info.phonetic;
     if (info.definition) document.getElementById('f-def').value = info.definition;
     if (info.example) document.getElementById('f-example').value = info.example;
-    showToast("Đã điền thông tin từ Dictionary API!");
+    showToast("Đã tự động điền thông tin từ vựng!");
   } else {
     showToast("Không tìm thấy dữ liệu từ API.");
   }
 }
 
-// ==== ĐỒNG BỘ SONG SONG TỪ EXTENSION ====
+// ==== ĐỒNG BỘ TỪ CHROME EXTENSION ====
 function syncFromExtension(isManual = false) {
   if (isManual) showToast("Đang lấy từ từ Extension...");
   window.postMessage({ type: "REQUEST_EXTENSION_VOCAB" }, "*");
@@ -409,25 +458,18 @@ window.addEventListener("message", async (event) => {
       return;
     }
 
-    const newItems = rawVocab.filter(item => 
-      !state.vocab.some(v => v.term.toLowerCase() === item.word.trim().toLowerCase())
-    );
-
-    if (newItems.length === 0) {
-      showToast("Dữ liệu đã mới nhất!");
-      return;
-    }
-
-    showToast(`Đang tra ${newItems.length} từ cùng lúc...`);
-
-    const enrichedVocab = await Promise.all(
-      newItems.map(async (item) => {
+    let addedCount = 0;
+    for (const item of rawVocab) {
+      const exists = state.vocab.find(v => v.term.toLowerCase() === item.word.toLowerCase());
+      if (!exists) {
+        // Tự động kéo định nghĩa từ chuỗi API tích hợp
         const apiData = await queryFreeDictionaryAPI(item.word);
-        return {
+
+        state.vocab.unshift({
           id: 'ext_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
-          term: item.word.trim(),
+          term: item.word,
           phonetic: apiData ? apiData.phonetic : "",
-          def: apiData && apiData.definition ? apiData.definition : "Chưa có nghĩa (Sửa để bổ sung)",
+          def: apiData ? apiData.definition : "Chưa có nghĩa (Sửa để bổ sung)",
           example: apiData && apiData.example ? apiData.example : (item.source ? `Nguồn: ${item.source}` : ""),
           group: 'Từ Extension',
           status: 'red',
@@ -435,15 +477,19 @@ window.addEventListener("message", async (event) => {
           lastReviewed: new Date().toISOString(),
           reviewCount: 0,
           nextReviewDate: new Date().toISOString()
-        };
-      })
-    );
+        });
+        addedCount++;
+      }
+    }
 
-    state.vocab.unshift(...enrichedVocab);
-    if (!state.groups.includes('Từ Extension')) state.groups.push('Từ Extension');
-    saveState();
-    renderVocabGrid();
-    showToast(`Đã đồng bộ ${enrichedVocab.length} từ mới thành công!`);
+    if (addedCount > 0) {
+      if (!state.groups.includes('Từ Extension')) state.groups.push('Từ Extension');
+      saveState();
+      renderVocabGrid();
+      showToast(`Đã đồng bộ ${addedCount} từ vựng từ Extension!`);
+    } else {
+      showToast("Dữ liệu đã mới nhất!");
+    }
   }
 });
 
