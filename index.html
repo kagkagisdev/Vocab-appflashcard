@@ -174,6 +174,10 @@
           <div class="flex items-center gap-3.5"><div class="w-12 h-12 rounded-2xl bg-emerald-100/80 flex items-center justify-center text-emerald-700 font-bold text-xl group-hover:bg-emerald-400 group-hover:text-white transition-all shadow-xs">🧪</div><div><h3 class="font-bold text-slate-800 text-sm sm:text-base">Test Trắc nghiệm</h3><p class="text-xs text-slate-500">Chọn đáp án đúng trong thời gian ngắn</p></div></div>
           <span id="cntAll3" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-600">0 từ</span>
         </div>
+        <div data-go="pronounce" class="review-opt p-4 rounded-2xl bg-white/80 border border-white/90 shadow-xs hover:shadow-md hover:scale-[1.01] transition-all cursor-pointer flex items-center justify-between group">
+          <div class="flex items-center gap-3.5"><div class="w-12 h-12 rounded-2xl bg-rose-100/80 flex items-center justify-center text-rose-700 font-bold text-xl group-hover:bg-rose-400 group-hover:text-white transition-all shadow-xs">🎙️</div><div><h3 class="font-bold text-slate-800 text-sm sm:text-base">Kiểm Tra Phát âm (BETA)</h3><p class="text-xs text-slate-500">Nói vào mic & nhận diện lỗi sai phát âm</p></div></div>
+          <span id="cntAll4" class="text-xs font-bold px-3 py-1 rounded-full bg-slate-100 text-slate-600">0 từ</span>
+        </div>
       </div>
     </section>
 
@@ -199,6 +203,14 @@
         <button onclick="switchView('reviewhub')" class="text-xs font-bold px-3.5 py-2 rounded-xl bg-white shadow-xs border border-slate-100">← Trở về</button>
       </div>
       <div id="quizBox" class="flex flex-col items-center justify-center min-h-[380px] p-4 bg-white/40 rounded-3xl border border-white/40"></div>
+    </section>
+
+    <section id="view-pronounce" class="view hidden space-y-5">
+      <div class="bg-white/70 backdrop-blur-md rounded-3xl p-5 border border-white/80 shadow-xs flex items-center justify-between">
+        <div><h1 class="text-xl font-bold text-slate-800">Kiểm Tra Phát Âm (BETA)</h1><p class="text-xs text-slate-500 mt-0.5">Nói vào mic và kiểm tra độ chính xác phát âm</p></div>
+        <button onclick="switchView('reviewhub')" class="text-xs font-bold px-3.5 py-2 rounded-xl bg-white shadow-xs border border-slate-100">← Trở về</button>
+      </div>
+      <div id="pronounceBox" class="flex flex-col items-center justify-center min-h-[380px] p-4 bg-white/40 rounded-3xl border border-white/40"></div>
     </section>
   </main>
 </div>
@@ -298,6 +310,7 @@ let calMonth = new Date();
 let flashIdx = 0, flashFlipped = false, flashDeck = [];
 let spellIdx = 0, spellDeck = [];
 let quizIdx = 0, quizDeck = [], quizScore = 0, quizAnswered = false;
+let pronounceIdx = 0, pronounceDeck = [], isListening = false, recognition = null;
 
 function showToast(msg) {
   const toast = document.getElementById('toast');
@@ -553,7 +566,7 @@ document.querySelectorAll('.nav-item').forEach(el => {
 
 function switchView(viewName) {
   let parentNav = viewName;
-  if (['flash', 'spell', 'quiz'].includes(viewName)) parentNav = 'reviewhub';
+  if (['flash', 'spell', 'quiz', 'pronounce'].includes(viewName)) parentNav = 'reviewhub';
 
   document.querySelectorAll('.nav-item').forEach(n => {
     const isTarget = n.getAttribute('data-view') === parentNav;
@@ -584,6 +597,7 @@ function switchView(viewName) {
   if (viewName === 'flash') initFlashcard();
   if (viewName === 'spell') initSpelling();
   if (viewName === 'quiz') initQuiz();
+  if (viewName === 'pronounce') initPronounce();
 }
 
 document.querySelectorAll('.status-pill').forEach(pill => {
@@ -822,6 +836,7 @@ function renderReviewHub() {
   document.getElementById('cntAll1').innerText = `${count} từ`;
   document.getElementById('cntAll2').innerText = `${count} từ`;
   document.getElementById('cntAll3').innerText = `${count} từ`;
+  document.getElementById('cntAll4').innerText = `${count} từ`;
 }
 
 document.querySelectorAll('.review-opt').forEach(opt => {
@@ -1019,6 +1034,191 @@ function answerQuiz(btn, selected, correct) {
   }
 
   setTimeout(() => { quizIdx++; quizAnswered = false; renderQuiz(); }, 900);
+}
+
+// ==== THUẬT TOÁN LEVENSHTEIN DISTANCE VÀ KIỂM TRA PHÁT ÂM (BETA) ====
+function levenshteinDistance(a, b) {
+  const matrix = [];
+  for (let i = 0; i <= b.length; i++) matrix[i] = [i];
+  for (let j = 0; j <= a.length; j++) matrix[0][j] = j;
+  for (let i = 1; i <= b.length; i++) {
+    for (let j = 1; j <= a.length; j++) {
+      if (b.charAt(i - 1) === a.charAt(j - 1)) {
+        matrix[i][j] = matrix[i - 1][j - 1];
+      } else {
+        matrix[i][j] = Math.min(
+          matrix[i - 1][j - 1] + 1,
+          matrix[i][j - 1] + 1,
+          matrix[i - 1][j] + 1
+        );
+      }
+    }
+  }
+  return matrix[b.length][a.length];
+}
+
+function alignWords(targetWords, spokenWords) {
+  const m = targetWords.length;
+  const n = spokenWords.length;
+  const dp = Array.from({ length: m + 1 }, () => Array(n + 1).fill(0));
+
+  for (let i = 0; i <= m; i++) dp[i][0] = i;
+  for (let j = 0; j <= n; j++) dp[0][j] = j;
+
+  for (let i = 1; i <= m; i++) {
+    for (let j = 1; j <= n; j++) {
+      const w1 = targetWords[i - 1].toLowerCase().replace(/[^\w]/g, '');
+      const w2 = spokenWords[j - 1].toLowerCase().replace(/[^\w]/g, '');
+      const dist = levenshteinDistance(w1, w2);
+      const cost = (dist === 0 || (w1.length > 3 && dist <= 1)) ? 0 : 1;
+      dp[i][j] = Math.min(
+        dp[i - 1][j] + 1,
+        dp[i][j - 1] + 1,
+        dp[i - 1][j - 1] + cost
+      );
+    }
+  }
+
+  let i = m, j = n;
+  const result = new Array(m);
+  while (i > 0 && j > 0) {
+    const w1 = targetWords[i - 1].toLowerCase().replace(/[^\w]/g, '');
+    const w2 = spokenWords[j - 1].toLowerCase().replace(/[^\w]/g, '');
+    const dist = levenshteinDistance(w1, w2);
+    const cost = (dist === 0 || (w1.length > 3 && dist <= 1)) ? 0 : 1;
+
+    if (dp[i][j] === dp[i - 1][j - 1] + cost) {
+      result[i - 1] = cost === 0;
+      i--; j--;
+    } else if (dp[i][j] === dp[i - 1][j] + 1) {
+      result[i - 1] = false;
+      i--;
+    } else {
+      j--;
+    }
+  }
+  while (i > 0) {
+    result[i - 1] = false;
+    i--;
+  }
+  return result;
+}
+
+function initPronounce() {
+  pronounceDeck = [...state.vocab];
+  pronounceIdx = 0;
+  isListening = false;
+  renderPronounce();
+}
+
+function renderPronounce(transcriptResult = null) {
+  const box = document.getElementById('pronounceBox');
+  box.innerHTML = '';
+  if (pronounceDeck.length === 0) {
+    box.innerHTML = `<p class="text-slate-400 text-xs font-semibold">Chưa có từ vựng nào.</p>`;
+    return;
+  }
+
+  const cur = pronounceDeck[pronounceIdx];
+  const targetText = cur.term;
+  const wrap = document.createElement('div');
+  wrap.className = 'w-full max-w-sm space-y-5 text-center flex flex-col items-center';
+
+  let textMarkup = '';
+  if (transcriptResult) {
+    const words = targetText.split(/\s+/);
+    const spokenWords = transcriptResult.trim().split(/\s+/);
+    const matchResults = alignWords(words, spokenWords);
+
+    textMarkup = words.map((w, idx) => {
+      const isOK = matchResults[idx];
+      return `<span class="px-2 py-1 rounded-xl text-lg font-extrabold shadow-2xs border ${isOK ? 'bg-emerald-100 text-emerald-700 border-emerald-300' : 'bg-rose-100 text-rose-700 border-rose-300'}">${w}</span>`;
+    }).join(' ');
+  } else {
+    textMarkup = `<h2 class="text-2xl font-extrabold text-slate-800">${targetText}</h2>`;
+  }
+
+  wrap.innerHTML = `
+    <div class="w-full p-5 rounded-3xl bg-white/80 border border-white shadow-xs space-y-2">
+      <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full">${cur.group || 'Tất cả'}</span>
+      <div class="flex flex-wrap justify-center items-center gap-1.5 my-3">
+        ${textMarkup}
+      </div>
+      ${cur.phonetic ? `<p class="text-xs text-slate-400 font-medium">${cur.phonetic}</p>` : ''}
+      <p class="text-xs text-slate-600 font-bold mt-1">Nghĩa: ${cur.def}</p>
+    </div>
+
+    ${transcriptResult ? `
+      <div class="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/60 w-full text-xs text-slate-700 space-y-1">
+        <span class="font-bold text-amber-900 block">Trình duyệt nhận diện được:</span>
+        <p class="italic font-semibold text-slate-800">"${transcriptResult}"</p>
+      </div>
+    ` : ''}
+
+    <div class="flex flex-col items-center gap-2.5">
+      <button id="btnMicPronounce" class="w-16 h-16 rounded-full ${isListening ? 'bg-rose-500 animate-pulse text-white' : 'bg-amber-400 hover:bg-amber-300 text-slate-900'} font-bold flex items-center justify-center shadow-lg transition-all active:scale-95">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z"/></svg>
+      </button>
+      <p class="text-[11px] font-bold text-slate-500">${isListening ? 'Đang lắng nghe... Bấm lại để hoàn tất' : 'Chạm micro để phát âm'}</p>
+    </div>
+
+    <div class="flex items-center gap-4 text-xs font-bold text-slate-600 pt-2">
+      <button id="btnPrevPronounce" class="px-3 py-1.5 rounded-xl bg-white shadow-xs border border-slate-200">‹ Trước</button>
+      <span>${pronounceIdx + 1} / ${pronounceDeck.length}</span>
+      <button id="btnNextPronounce" class="px-3 py-1.5 rounded-xl bg-white shadow-xs border border-slate-200">Tiếp ›</button>
+    </div>
+  `;
+  box.appendChild(wrap);
+
+  document.getElementById('btnMicPronounce').onclick = toggleListening;
+  document.getElementById('btnPrevPronounce').onclick = () => { pronounceIdx = Math.max(0, pronounceIdx - 1); renderPronounce(); };
+  document.getElementById('btnNextPronounce').onclick = () => { pronounceIdx = (pronounceIdx + 1) % pronounceDeck.length; renderPronounce(); };
+}
+
+function toggleListening() {
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  if (!SpeechRecognition) {
+    showToast('Trình duyệt của bạn không hỗ trợ SpeechRecognition!');
+    return;
+  }
+
+  if (isListening) {
+    if (recognition) recognition.stop();
+    isListening = false;
+    renderPronounce();
+    return;
+  }
+
+  recognition = new SpeechRecognition();
+  recognition.lang = 'en-US';
+  recognition.interimResults = false;
+  recognition.maxAlternatives = 1;
+
+  recognition.onstart = () => {
+    isListening = true;
+    renderPronounce();
+  };
+
+  recognition.onresult = (event) => {
+    const transcript = event.results[0][0].transcript;
+    isListening = false;
+    renderPronounce(transcript);
+  };
+
+  recognition.onerror = (event) => {
+    isListening = false;
+    showToast('Lỗi nhận diện âm thanh!');
+    renderPronounce();
+  };
+
+  recognition.onend = () => {
+    if (isListening) {
+      isListening = false;
+      renderPronounce();
+    }
+  };
+
+  recognition.start();
 }
 
 const modalOverlay = document.getElementById('modalOverlay');
