@@ -1,45 +1,52 @@
 <!DOCTYPE html>
 <html lang="vi">
 <head>
-    <meta charset="UTF-8">
-    <title>Flash vocab</title>
-    <link rel="shortcut icon" type="image/png" href="favicon.png"> <!-- Thêm dòng này -->
-    <script src="https://tailwindcss.com"></script>
-</head>
-
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Flash vocab</title>
-<script src="https://cdn.tailwindcss.com"></script>
-<link rel="preconnect" href="https://fonts.googleapis.com">
-<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-<script>
-  tailwind.config = {
-    theme: {
-      extend: {
-        fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
-        colors: {
-          brand: { bg: '#FAF6ED', sidebar: '#F3EBD8', card: '#FFFFFF', accent: '#F59E0B', accentHover: '#D97706', red: '#EF4444', yellow: '#F59E0B', cyan: '#06B6D4', emerald: '#10B981' }
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Flash Vocab - Spaced Repetition</title>
+  <link rel="shortcut icon" type="image/png" href="favicon.png">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Noto+Sans:wght@400&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          fontFamily: { sans: ['"Plus Jakarta Sans"', 'sans-serif'] },
+          colors: {
+            brand: { bg: '#FAF6ED', sidebar: '#F3EBD8', card: '#FFFFFF', accent: '#F59E0B', accentHover: '#D97706', red: '#EF4444', yellow: '#F59E0B', cyan: '#06B6D4', emerald: '#10B981' }
+          }
         }
       }
     }
-  }
-</script>
-<style>
-  body { background: linear-gradient(180deg, #FAF6ED 0%, #F5E5BE 100%); min-height: 100vh; font-family: 'Plus Jakarta Sans', sans-serif; color: #334155; -webkit-tap-highlight-color: transparent; }
-  ::-webkit-scrollbar { width: 6px; height: 6px; }
-  ::-webkit-scrollbar-track { background: transparent; }
-  ::-webkit-scrollbar-thumb { background: rgba(180, 150, 90, 0.3); border-radius: 99px; }
-  ::-webkit-scrollbar-thumb:hover { background: rgba(180, 150, 90, 0.5); }
-  .perspective-1000 { perspective: 1000px; }
-  .transform-style-3d { transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
-  .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
-  .rotate-y-180 { transform: rotateY(180deg); }
-  .soft-shadow { box-shadow: 0 10px 25px -5px rgba(165, 135, 75, 0.12); }
-  .soft-shadow-lg { box-shadow: 0 20px 35px -10px rgba(150, 120, 60, 0.18); }
-</style>
+  </script>
+  <style>
+    body { background: linear-gradient(180deg, #FAF6ED 0%, #F5E5BE 100%); min-height: 100vh; font-family: 'Plus Jakarta Sans', sans-serif; color: #334155; -webkit-tap-highlight-color: transparent; }
+    ::-webkit-scrollbar { width: 6px; height: 6px; }
+    ::-webkit-scrollbar-track { background: transparent; }
+    ::-webkit-scrollbar-thumb { background: rgba(180, 150, 90, 0.3); border-radius: 99px; }
+    ::-webkit-scrollbar-thumb:hover { background: rgba(180, 150, 90, 0.5); }
+    .perspective-1000 { perspective: 1000px; }
+    .transform-style-3d { transform-style: preserve-3d; transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1); }
+    .backface-hidden { backface-visibility: hidden; -webkit-backface-visibility: hidden; }
+    .rotate-y-180 { transform: rotateY(180deg); }
+    .soft-shadow { box-shadow: 0 10px 25px -5px rgba(165, 135, 75, 0.12); }
+    .soft-shadow-lg { box-shadow: 0 20px 35px -10px rgba(150, 120, 60, 0.18); }
+    /* IPA: clean, regular-weight text; avoid unusual SIL fonts and synthetic bolding. */
+    .ipa-text, #f-phonetic {
+      font-family: "Noto Sans", "Segoe UI", "Arial Unicode MS", sans-serif !important;
+      font-style: normal !important;
+      font-weight: 400 !important;
+      font-synthesis: none;
+      letter-spacing: normal;
+      line-height: 1.6;
+      font-variant-ligatures: none;
+      font-feature-settings: "liga" 0;
+      unicode-bidi: plaintext;
+      text-shadow: none;
+    }
+  </style>
 </head>
 <body class="antialiased text-slate-700 selection:bg-amber-200 selection:text-amber-900 pb-20 md:pb-0">
 
@@ -110,6 +117,21 @@
 
   <!-- MAIN CONTENT -->
   <main class="flex-1 p-4 sm:p-6 lg:p-8 min-w-0 flex flex-col space-y-5">
+    <section id="reviewReminderBanner" class="hidden rounded-2xl border border-amber-200 bg-amber-50 px-4 py-3 shadow-sm" aria-live="polite">
+      <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3">
+        <div class="flex items-start gap-3">
+          <span class="text-xl" aria-hidden="true">⏰</span>
+          <div>
+            <p id="reviewReminderTitle" class="text-sm font-extrabold text-amber-900">Đã đến giờ ôn tập</p>
+            <p id="reviewReminderText" class="mt-1 text-xs text-amber-800">Bạn có từ vựng cần ôn.</p>
+          </div>
+        </div>
+        <div class="flex flex-wrap gap-2">
+          <button type="button" onclick="switchView('reviewhub')" class="rounded-xl bg-amber-500 px-3 py-2 text-xs font-bold text-white hover:bg-amber-600">Ôn ngay</button>
+          <button type="button" id="enableBrowserNotifications" onclick="enableReviewNotifications()" class="rounded-xl border border-amber-300 bg-white px-3 py-2 text-xs font-bold text-amber-900 hover:bg-amber-100">Bật thông báo trình duyệt</button>
+        </div>
+      </div>
+    </section>
     <header class="flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-3">
       <div class="relative flex-1 max-w-md">
         <input id="searchInput" type="text" placeholder="Tìm từ vựng, định nghĩa..." class="w-full pl-10 pr-4 py-2.5 rounded-2xl bg-white/80 border border-amber-900/10 text-xs sm:text-sm font-semibold focus:outline-none focus:ring-2 focus:ring-amber-400 focus:bg-white transition-all shadow-xs placeholder:text-slate-400">
@@ -159,7 +181,7 @@
         <div class="bg-white/80 backdrop-blur-md rounded-3xl p-5 border border-white soft-shadow flex flex-col">
           <h3 class="font-bold text-slate-800 text-sm mb-1">Cần ôn hôm nay</h3>
           <p id="dueSummary" class="text-xs text-slate-500 mb-3"></p>
-          <div id="dueList" class="space-y-2 flex-1 overflow-y-auto max-h-[300px] pr-1"></div>
+          <div id="dueList" class="space-y-2 flex-1 overflow-y-auto max-h-[560px] pr-1"></div>
         </div>
       </div>
     </section>
@@ -234,7 +256,13 @@
 <div id="modalOverlay" class="fixed inset-0 bg-slate-900/40 backdrop-blur-xs flex items-center justify-center hidden z-50 p-4">
   <div class="bg-white rounded-3xl p-6 w-full max-w-md shadow-2xl space-y-4 border border-amber-900/10 max-h-[90vh] overflow-y-auto">
     <div class="flex items-center justify-between pb-2 border-b border-slate-100">
-      <h2 id="modalTitle" class="text-base font-bold text-slate-800">Thêm Từ Vựng Mới</h2>
+      <div class="flex items-center gap-2">
+        <h2 id="modalTitle" class="text-base font-bold text-slate-800">Thêm Từ Vựng Mới</h2>
+        <button type="button" onclick="document.getElementById('importCsvInput').click()" class="text-[11px] text-amber-800 font-bold bg-amber-100 hover:bg-amber-200 px-2.5 py-1 rounded-lg transition-all flex items-center gap-1 active:scale-95 shadow-2xs" title="Import từ vựng từ file CSV">
+          📥 Import từ file
+        </button>
+        <input type="file" id="importCsvInput" accept=".csv" class="hidden" onchange="handleImportCSV(event)">
+      </div>
       <button id="closeModal" class="w-8 h-8 rounded-xl hover:bg-slate-100 flex items-center justify-center text-slate-400 hover:text-slate-600 font-bold">✕</button>
     </div>
 
@@ -244,17 +272,17 @@
       <div>
         <div class="flex justify-between items-center mb-1">
           <label class="block text-xs font-bold text-slate-700">Từ vựng *</label>
-          <button type="button" onclick="autoFetchDictionaryAPI()" class="text-[10px] text-amber-600 font-bold hover:underline flex items-center gap-1">📖 Tra Tự Động (Multi-API)</button>
+          <button type="button" onclick="autoFetchDictionaryAPI()" class="text-[10px] text-amber-600 font-bold hover:underline flex items-center gap-1">📖 Tra Nghĩa Anh-Anh.</button>
         </div>
-        <input id="f-term" type="text" placeholder="Ví dụ: Ephemeral" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-semibold focus:ring-2 focus:ring-amber-400 focus:outline-none">
+        <input id="f-term" type="text" placeholder="Nhập từ vựng vào đây." class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-semibold focus:ring-2 focus:ring-amber-400 focus:outline-none">
       </div>
       <div>
-        <label class="block text-xs font-bold text-slate-700 mb-1">Phiên âm</label>
-        <input id="f-phonetic" type="text" placeholder="Ví dụ: /ɪˈfemərəl/" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:ring-2 focus:ring-amber-400 focus:outline-none">
+        <label class="block text-xs font-bold text-slate-700 mb-1">Phiên âm IPA</label>
+        <input id="f-phonetic" type="text" placeholder="Ví dụ: /ɪˈfemərəl/" class="ipa-text w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm focus:ring-2 focus:ring-amber-400 focus:outline-none">
       </div>
       <div>
-        <label class="block text-xs font-bold text-slate-700 mb-1">Nghĩa/ meaning *</label>
-        <input id="f-def" type="text" placeholder="Ví dụ: Ngắn ngủi, phù du" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-semibold focus:ring-2 focus:ring-amber-400 focus:outline-none">
+        <label class="block text-xs font-bold text-slate-700 mb-1">Nghĩa Anh-Anh (English Definition) *</label>
+        <input id="f-def" type="text" placeholder="Ví dụ: Lasting for a very short time" class="w-full px-3.5 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs sm:text-sm font-semibold focus:ring-2 focus:ring-amber-400 focus:outline-none">
       </div>
       <div>
         <label class="block text-xs font-bold text-slate-700 mb-1">Ví dụ đặt câu</label>
@@ -271,7 +299,7 @@
         </div>
         <div>
           <label class="block text-xs font-bold text-slate-700 mb-1">Nhóm từ</label>
-          <input id="f-group" list="groupList" placeholder="Tất cả" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold focus:ring-2 focus:ring-amber-400 focus:outline-none">
+          <input id="f-group" list="groupList" placeholder="Chưa phân nhóm" class="w-full px-3 py-2.5 rounded-xl bg-slate-50 border border-slate-200 text-xs font-semibold focus:ring-2 focus:ring-amber-400 focus:outline-none">
           <datalist id="groupList"></datalist>
         </div>
       </div>
@@ -319,6 +347,24 @@ let spellIdx = 0, spellDeck = [];
 let quizIdx = 0, quizDeck = [], quizScore = 0, quizAnswered = false;
 let pronounceIdx = 0, pronounceDeck = [], isListening = false, recognition = null;
 
+let isSyncing = false;
+let syncTimeoutId = null;
+let syncMessageHandler = null;
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;").replace(/'/g, "&#039;");
+}
+
+function shuffleArray(array) {
+  const arr = [...array];
+  for (let i = arr.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [arr[i], arr[j]] = [arr[j], arr[i]];
+  }
+  return arr;
+}
+
 function showToast(msg) {
   const toast = document.getElementById('toast');
   const toastMsg = document.getElementById('toastMsg');
@@ -332,27 +378,182 @@ function showToast(msg) {
   }, 2500);
 }
 
-// ==== XUẤT FILE CSV ====
-function exportToCSV(flashcards) {
-  let csvContent = "data:text/csv;charset=utf-8,\uFEFF";
-  csvContent += "Mặt trước (Từ vựng),Mặt sau (Nghĩa),Ví dụ,Trạng thái\n";
+// SRS v2: difficulty + stability + leech detection + priority scheduling.
+// Giữ lại memoryHalfLifeDays trong dữ liệu cũ để tương thích, nhưng KHÔNG còn dùng
+// fixed interval [1,3,7,14,30,60,90] để quyết định lịch ôn.
+const MINUTE = 60000, DAY = 86400000;
+const DAILY_NEW_LIMIT = 20;
 
-  flashcards.forEach(card => {
-    let word = `"${(card.word || card.term || '').replace(/"/g, '""')}"`;
-    let meaning = `"${(card.meaning || card.def || '').replace(/"/g, '""')}"`;
-    let example = `"${(card.example || '').replace(/"/g, '""')}"`;
-    let status = `"${card.status === 'cyan' ? 'Đã thuộc' : card.status === 'yellow' ? 'Gần thuộc' : 'Chưa thuộc'}"`;
+function clampNumber(value, min, max, fallback) {
+  const n = Number(value);
+  return Number.isFinite(n) ? Math.max(min, Math.min(max, n)) : fallback;
+}
 
-    csvContent += `${word},${meaning},${example},${status}\n`;
-  });
+function getMastery(item, now = Date.now()) {
+  if (!item) return 0;
 
-  const encodedUri = encodeURI(csvContent);
-  const link = document.createElement("a");
-  link.setAttribute("href", encodedUri);
-  link.setAttribute("download", `tu_vung_flashcard_${new Date().toISOString().slice(0,10)}.csv`);
-  document.body.appendChild(link);
-  link.click();
-  document.body.removeChild(link);
+  const count = Math.max(0, Number(item.reviewCount) || 0);
+  const baseByStatus = { red: 35, yellow: 68, cyan: 92 };
+  const base = Math.min(97, (baseByStatus[item.status] || 35) + Math.min(5, count));
+
+  const anchor = item.lastReviewed || item.dateAdded;
+  if (!anchor) return Math.round(base);
+
+  const anchorMs = new Date(anchor).getTime();
+  if (!Number.isFinite(anchorMs)) return Math.round(base);
+
+  const elapsedDays = Math.max(0, (now - anchorMs) / DAY);
+  // Stability là số ngày bộ nhớ còn giữ được; dùng trực tiếp làm half-life ước tính.
+  const stability = clampNumber(item.stability, 0.5, 365, 1);
+  const retained = base * Math.pow(0.5, elapsedDays / stability);
+
+  return Math.max(1, Math.min(99, Math.round(retained)));
+}
+
+function masteryLabel(score) {
+  return score >= 75 ? 'Đã thuộc' : score >= 45 ? 'Gần thuộc' : 'Chưa thuộc';
+}
+
+function progressMarkup(item, compact = false, scoreOverride = null) {
+  const score = scoreOverride === null ? getMastery(item) : Math.max(0, Math.min(100, Math.round(scoreOverride)));
+  const color = score >= 75 ? '#10B981' : score >= 45 ? '#F59E0B' : '#F43F5E';
+  return `<div class="${compact ? 'mt-1.5' : 'mt-2.5'} w-full" title="Mức ghi nhớ ước tính, giảm dần theo thời gian theo stability">
+    <div class="flex justify-between items-center gap-2 mb-1"><span class="text-[10px] font-bold text-slate-500">Mức độ thuộc</span><span class="text-[10px] font-extrabold" style="color:${color}">${score}%</span></div>
+    <div class="h-2 rounded-full bg-slate-100 overflow-hidden"><div class="h-full rounded-full transition-all duration-500" style="width:${score}%;background:${color}"></div></div>
+  </div>`;
+}
+
+function getSuccessRate(item) {
+  const history = Array.isArray(item && item.reviewHistory) ? item.reviewHistory : [];
+  if (history.length === 0) return 0;
+  const goodReviews = history.filter(entry => entry && entry.rating === 'good').length;
+  return Math.round((goodReviews / history.length) * 100);
+}
+
+function getPriorityScore(item, now = Date.now()) {
+  const mastery = getMastery(item, now);
+  const wrongCount = Math.max(0, Number(item.wrongCount) || 0);
+  const nextAt = item.nextReviewDate ? new Date(item.nextReviewDate).getTime() : 0;
+  const overdueDays = Number.isFinite(nextAt) ? Math.max(0, (now - nextAt) / DAY) : 0;
+
+  // Ưu tiên: mastery thấp + sai nhiều + quá hạn lâu.
+  return (100 - mastery) + (wrongCount * 5) + (overdueDays * 3);
+}
+
+function isCardDue(item, now = Date.now()) {
+  if (!item) return false;
+  if (!item.nextReviewDate) return true;
+  const nextAt = new Date(item.nextReviewDate).getTime();
+  return !Number.isFinite(nextAt) || nextAt <= now;
+}
+
+function getLearningQueues(now = Date.now()) {
+  const todayKey = new Date(now).toISOString().slice(0, 10);
+
+  // Daily New Limit được lưu ngay trong localStorage state để không thể vượt 20
+  // card mới/ngày chỉ vì người học review nhanh các card trước đó.
+  if (!state.srsDailyNew || state.srsDailyNew.date !== todayKey) {
+    state.srsDailyNew = { date: todayKey, ids: [] };
+  }
+  state.srsDailyNew.ids = Array.isArray(state.srsDailyNew.ids) ? state.srsDailyNew.ids : [];
+
+  const reviewCards = state.vocab
+    .filter(v => Number(v.reviewCount) >= 3 && isCardDue(v, now))
+    .sort((a, b) => getPriorityScore(b, now) - getPriorityScore(a, now));
+
+  const learningCards = state.vocab
+    .filter(v => Number(v.reviewCount) > 0 && Number(v.reviewCount) < 3 && isCardDue(v, now))
+    .sort((a, b) => getPriorityScore(b, now) - getPriorityScore(a, now));
+
+  const remainingNewSlots = Math.max(0, DAILY_NEW_LIMIT - state.srsDailyNew.ids.length);
+
+  if (remainingNewSlots > 0) {
+    const candidates = state.vocab
+      .filter(v => Number(v.reviewCount) === 0 && !state.srsDailyNew.ids.includes(v.id))
+      .sort((a, b) => {
+        const aTime = new Date(a.dateAdded || 0).getTime() || 0;
+        const bTime = new Date(b.dateAdded || 0).getTime() || 0;
+        return aTime - bTime;
+      })
+      .slice(0, remainingNewSlots);
+
+    candidates.forEach(card => state.srsDailyNew.ids.push(card.id));
+    if (candidates.length) saveState();
+  }
+
+  // Những New Cards đã được cấp vào queue hôm nay vẫn được phép xuất hiện lại
+  // trong cùng ngày (ví dụ vừa bấm Again và đang ở learning interval 10 phút).
+  const newCards = state.vocab
+    .filter(v => Number(v.reviewCount) === 0 && state.srsDailyNew.ids.includes(v.id) && isCardDue(v, now))
+    .sort((a, b) => getPriorityScore(b, now) - getPriorityScore(a, now));
+
+  return {
+    newCards,
+    learningCards,
+    reviewCards,
+    allCards: [...reviewCards, ...learningCards, ...newCards]
+  };
+}
+
+function getReviewQueue(now = Date.now()) {
+  return getLearningQueues(now).allCards;
+}
+
+function processWordReview(wordId, result) {
+  const item = state.vocab.find(v => v.id === wordId);
+  if (!item) return null;
+
+  const now = Date.now();
+  const rating = typeof result === 'string' ? result : (result ? 'good' : 'again');
+
+  // Migration safety nếu item vừa được tạo bởi nguồn cũ.
+  item.difficulty = clampNumber(item.difficulty, 1, 10, 5);
+  item.stability = clampNumber(item.stability, 0.5, 365, 1);
+  item.wrongCount = Math.max(0, Number(item.wrongCount) || 0);
+  item.reviewHistory = Array.isArray(item.reviewHistory) ? item.reviewHistory : [];
+
+  item.lastReviewed = new Date(now).toISOString();
+  item.reviewHistory.push({ at: item.lastReviewed, rating });
+  if (item.reviewHistory.length > 100) item.reviewHistory = item.reviewHistory.slice(-100);
+
+  if (rating === 'again') {
+    item.difficulty += 0.4;
+    item.stability *= 0.5;
+    item.wrongCount += 1;
+    item.status = 'red';
+    // Không reset reviewCount: reviewCount vẫn là số lần review; phase được
+    // xác định bởi 0 = New, 1-2 = Learning, >=3 = Review.
+    item.nextReviewDate = new Date(now + 10 * MINUTE).toISOString();
+  } else if (rating === 'hard') {
+    item.difficulty += 0.15;
+    item.stability *= 1.2;
+    item.status = 'yellow';
+    item.nextReviewDate = new Date(now + item.stability * 0.5 * DAY).toISOString();
+  } else {
+    item.difficulty -= 0.05;
+    item.stability *= (1.8 - item.difficulty * 0.05);
+    item.reviewCount = (Number(item.reviewCount) || 0) + 1;
+    item.status = item.reviewCount >= 3 ? 'cyan' : 'yellow';
+    item.wrongCount = Math.max(0, item.wrongCount - 1);
+    item.nextReviewDate = new Date(now + item.stability * DAY).toISOString();
+  }
+
+  item.difficulty = Math.max(1, Math.min(10, item.difficulty));
+  item.stability = Math.max(0.5, Math.min(365, item.stability));
+  item.isLeech = item.wrongCount >= 8;
+  item.lastReviewRating = rating;
+
+  saveState();
+  refreshVisibleProgress();
+  return item;
+}
+
+function refreshVisibleProgress() {
+  const visible = document.querySelector('.view:not(.hidden)');
+  if (!visible) return;
+  if (visible.id === 'view-vocab') renderVocabGrid();
+  else if (visible.id === 'view-groups') renderGroups();
+  else if (visible.id === 'view-schedule') renderSchedule();
 }
 
 function handleExportCSV() {
@@ -360,164 +561,512 @@ function handleExportCSV() {
     showToast("Không có từ vựng nào để xuất!");
     return;
   }
-  exportToCSV(state.vocab);
-  showToast("Đã xuất file CSV thành công!");
+
+  // Xuất đủ trường để sao lưu/khôi phục không làm rơi IPA, nhóm hoặc trạng thái.
+  const csvCell = value => `"${String(value ?? '').replace(/"/g, '""')}"`;
+  const rows = [["Từ vựng", "IPA", "Nghĩa Anh-Anh", "Ví dụ", "Trạng thái", "Nhóm"]];
+  state.vocab.forEach(card => {
+    rows.push([
+      card.term || '', card.phonetic || '', card.def || '', card.example || '',
+      STATUS_COLORS[card.status] ? STATUS_COLORS[card.status].label : 'Chưa thuộc',
+      card.group || 'Chưa phân nhóm'
+    ]);
+  });
+  const csvContent = rows.map(row => row.map(csvCell).join(',')).join('\r\n');
+  const blob = new Blob(["\uFEFF" + csvContent], { type: 'text/csv;charset=utf-8;' });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `tu_vung_flashcard_${new Date().toISOString().slice(0,10)}.csv`;
+  document.body.appendChild(link);
+  link.click();
+  document.body.removeChild(link);
+  setTimeout(() => URL.revokeObjectURL(url), 1000);
+  showToast("Đã xuất file CSV (bao gồm IPA, trạng thái và nhóm)!");
 }
 
-// ==== TRA TỪ TỰ ĐỘNG BẰNG FREE DICTIONARY + DATAMUSE + MYMEMORY API ====
-async function queryFreeDictionaryAPI(word) {
-  const cleanWord = word.trim().toLowerCase();
-  if (!cleanWord) return null;
-
-  // 1. Ưu tiên 1: Free Dictionary API (Phiên âm + Định nghĩa chuẩn + Ví dụ)
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2500);
-
-    const res = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(cleanWord)}`, {
-      signal: controller.signal
-    });
-    clearTimeout(timeoutId);
-
-    if (res.ok) {
-      const data = await res.json();
-      if (data && data.length > 0) {
-        const entry = data[0];
-        const phonetic = entry.phonetic || (entry.phonetics && entry.phonetics.find(p => p.text)?.text) || "";
-        const meaningObj = entry.meanings && entry.meanings[0];
-        const defObj = meaningObj && meaningObj.definitions && meaningObj.definitions[0];
-        const definition = defObj ? defObj.definition : "";
-        const example = defObj ? (defObj.example || "") : "";
-
-        if (definition) {
-          return { phonetic, definition, example };
-        }
-      }
-    }
-  } catch (e) {
-    console.warn("Free Dictionary API không khả dụng, đang thử Datamuse API...", e);
+// Đọc CSV có dấu phẩy, dấu ngoặc kép và xuống dòng bên trong ô.
+function parseCSVRows(text) {
+  const rows = [];
+  let row = [], cell = '', quoted = false;
+  const input = String(text || '').replace(/^\uFEFF/, '');
+  for (let i = 0; i < input.length; i++) {
+    const ch = input[i];
+    if (quoted) {
+      if (ch === '"' && input[i + 1] === '"') { cell += '"'; i++; }
+      else if (ch === '"') quoted = false;
+      else cell += ch;
+    } else if (ch === '"' && cell.length === 0) quoted = true;
+    else if (ch === ',') { row.push(cell); cell = ''; }
+    else if (ch === '\n') { row.push(cell.replace(/\r$/, '')); rows.push(row); row = []; cell = ''; }
+    else cell += ch;
   }
+  if (cell.length || row.length) { row.push(cell.replace(/\r$/, '')); rows.push(row); }
+  return rows.filter(r => r.some(c => String(c).trim() !== ''));
+}
 
-  // 2. Dự phòng 1: Datamuse API (Tra cứu định nghĩa Tiếng Anh nhanh)
-  try {
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2500);
-
-    const resDatamuse = await fetch(`https://api.datamuse.com/words?sp=${encodeURIComponent(cleanWord)}&md=d`, {
-      signal: controller.signal
-    });
-    clearTimeout(timeoutId);
-
-    if (resDatamuse.ok) {
-      const dataDatamuse = await resDatamuse.json();
-      if (dataDatamuse && dataDatamuse.length > 0 && dataDatamuse[0].defs) {
-        // Datamuse trả về dạng "n\tdefinition" -> Cắt bỏ tiền tố từ loại
-        const rawDef = dataDatamuse[0].defs[0] || "";
-        const cleanDef = rawDef.includes("\t") ? rawDef.split("\t")[1] : rawDef;
-        if (cleanDef) {
-          return {
-            phonetic: "",
-            definition: cleanDef,
-            example: ""
-          };
-        }
-      }
-    }
-  } catch (e) {
-    console.warn("Datamuse API không khả dụng...", e);
-  }
-
-  // 3. Dự phòng 2: MyMemory API (Dịch nghĩa sang Tiếng Việt nếu cả 2 API trên không tìm thấy)
-  try {
-    const resTranslation = await fetch(`https://api.mymemory.translated.net/get?q=${encodeURIComponent(cleanWord)}&langpair=en|vi`);
-    if (resTranslation.ok) {
-      const transData = await resTranslation.json();
-      const translatedText = transData?.responseData?.translatedText;
-      if (translatedText && translatedText.toLowerCase() !== cleanWord) {
-        return {
-          phonetic: "",
-          definition: translatedText,
-          example: ""
+function handleImportCSV(e) {
+  const file = e.target.files && e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = function(evt) {
+    try {
+      const rows = parseCSVRows(evt.target.result);
+      if (!rows.length) { showToast('File CSV trống hoặc không hợp lệ.'); return; }
+      const normalize = value => String(value || '').trim().toLowerCase().replace(/đ/g, 'd').normalize('NFD').replace(/[\u0300-\u036f]/g, '');
+      const first = rows[0].map(normalize);
+      const hasHeader = first.some(h => /tu vung|mat truoc|word|term|ipa|phien am|nghia|definition|example|vi du|trang thai|status|nhom|group/.test(h));
+      let columns = { term: 0, phonetic: -1, def: 1, example: 2, status: 3, group: 5 };
+      if (hasHeader) {
+        const find = patterns => first.findIndex(h => patterns.some(pattern => pattern.test(h)));
+        columns = {
+          term: find([/^(tu vung|mat truoc|word|term)$/]),
+          phonetic: find([/^ipa$/, /phien am/, /phonetic/]),
+          def: find([/nghia/, /definition/, /mat sau/, /^meaning$/]),
+          example: find([/example/, /vi du/]),
+          status: find([/trang thai/, /^status$/, /muc do thuoc/]),
+          group: find([/^nhom$/, /^group$/, /chu de/])
         };
+        if (columns.term < 0) columns.term = 0;
+        // Tương thích CSV cũ: term, definition, example, status.
+        if (columns.def < 0 && columns.phonetic < 0) columns.def = 1;
+        if (columns.example < 0) columns.example = columns.phonetic >= 0 ? 3 : 2;
       }
+      const statusFromLabel = value => {
+        const v = normalize(value);
+        if (v.includes('da thuoc') || v === 'cyan' || v === 'known') return 'cyan';
+        if (v.includes('gan thuoc') || v === 'yellow' || v === 'learning') return 'yellow';
+        return 'red';
+      };
+      let count = 0;
+      const importedGroups = new Set();
+      for (const row of rows.slice(hasHeader ? 1 : 0)) {
+        const get = key => columns[key] >= 0 ? String(row[columns[key]] || '').trim() : '';
+        const term = get('term');
+        if (!term) continue;
+        const exists = state.vocab.find(v => String(v.term || '').toLowerCase() === term.toLowerCase());
+        if (exists) continue;
+        const group = get('group') || 'Imported';
+        const status = get('status');
+        state.vocab.unshift({
+          id: 'import_' + Date.now() + '_' + Math.random().toString(36).substring(2, 8),
+          term,
+          phonetic: get('phonetic'),
+          def: get('def') || 'Chưa có nghĩa',
+          example: get('example'),
+          group,
+          status: status ? statusFromLabel(status) : 'red',
+          dateAdded: new Date().toISOString(),
+          reviewCount: 0,
+          nextReviewDate: new Date().toISOString(),
+          difficulty: 5,
+          stability: 1,
+          wrongCount: 0,
+          isLeech: false
+        });
+        importedGroups.add(group);
+        count++;
+      }
+      if (count > 0) {
+        for (const group of importedGroups) if (!state.groups.includes(group)) state.groups.push(group);
+        saveState();
+        renderVocabGrid();
+        showToast(`Đã import ${count} từ vựng mới (khôi phục IPA/trạng thái/nhóm nếu có)!`);
+        document.getElementById('modalOverlay').classList.add('hidden');
+      } else showToast('Không tìm thấy từ mới trong file CSV!');
+    } catch (err) {
+      console.error('CSV import failed:', err);
+      showToast('Lỗi khi đọc file CSV!');
+    } finally {
+      e.target.value = '';
     }
-  } catch (e) {}
-
-  return null;
+  };
+  reader.readAsText(file, 'UTF-8');
 }
 
-async function autoFetchDictionaryAPI() {
-  const term = document.getElementById('f-term').value.trim();
-  if (!term) {
-    showToast("Vui lòng nhập từ tiếng Anh!");
+// Nhận diện ARPAbet để không hiển thị nhầm thành IPA (ví dụ: HH AE1 NG AW0 T).
+function isLikelyArpabet(value) {
+  const raw = String(value || '').trim().replace(/^[/\[]|[\]/]+$/g, '').trim();
+  if (!raw) return false;
+  const tokens = raw.split(/\s+/);
+  const arpabetPhones = new Set(['AA','AE','AH','AO','AW','AY','B','CH','D','DH','EH','ER','EY','F','G','HH','IH','IY','JH','K','L','M','N','NG','OW','OY','P','R','S','SH','T','TH','UH','UW','V','W','Y','Z','ZH']);
+  // ARPAbet thường là chuỗi token ASCII viết hoa, có thể kèm số trọng âm 0/1/2.
+  return tokens.length > 1 && tokens.every(token => /^[A-Z]{1,3}[012]?$/.test(token) && arpabetPhones.has(token.replace(/[012]$/, ''))) &&
+    (tokens.some(token => /[012]$/.test(token)) || tokens.every(token => arpabetPhones.has(token)));
+}
+
+function isUsableIPA(value) {
+  const text = String(value || '').trim();
+  if (!text || isLikelyArpabet(text)) return false;
+  // Chặn các token ARPAbet viết hoa ngay cả khi chỉ có một vài token.
+  const core = text.replace(/^\s*[\/[\(]?/, '').replace(/[\]/\)]+\s*$/, '').trim();
+  const tokens = core.split(/\s+/).filter(Boolean);
+  const arpabetPhones = new Set(['AA','AE','AH','AO','AW','AY','B','CH','D','DH','EH','ER','EY','F','G','HH','IH','IY','JH','K','L','M','N','NG','OW','OY','P','R','S','SH','T','TH','UH','UW','V','W','Y','Z','ZH']);
+  if (tokens.length && tokens.every(token => /^[A-Z]{1,3}[012]?$/.test(token) && arpabetPhones.has(token.replace(/[012]$/, '')))) return false;
+  // Chấp nhận IPA Unicode phổ biến; cũng cho phép bản ASCII viết thường như /kat/.
+  const hasIpaSymbols = /[\u0250-\u02AF\u1D00-\u1DBF\u02B0-\u02FF]/u.test(text);
+  const wrappedAscii = /^[\/\[][a-zəɐɜɪʊʌɔɛæɑɒɨʉɯɤɵøœɶɞɘɚɝɜɐɒʃʒθðŋɲɳɾɹɻɫɥɰʔˈˌːˑ.ˑ˞̩̯̃\s'ˈˌ-]+[\/\]]$/u.test(text);
+  return hasIpaSymbols || wrappedAscii;
+}
+
+// Tra cứu từ điển: gom IPA/nghĩa/ví dụ từ mọi entry, không bỏ lỡ phonetics ở entry sau.
+async function queryDictionaryAPI(word) {
+  const cleanWord = String(word || '').trim().toLowerCase();
+  if (!cleanWord) return null;
+  let phonetic = '', definition = '', example = '';
+
+  // Nguồn chính: Free Dictionary API
+  try {
+    const controller = new AbortController();
+    const timeoutId = setTimeout(() => controller.abort(), 7000);
+    let resDict;
+    try {
+      resDict = await fetch(`https://api.dictionaryapi.dev/api/v2/entries/en/${encodeURIComponent(cleanWord)}`, { signal: controller.signal });
+    } finally { clearTimeout(timeoutId); }
+
+    if (resDict && resDict.ok) {
+      const entries = await resDict.json();
+      for (const entry of (Array.isArray(entries) ? entries : [])) {
+        // Chọn IPA đáng tin cậy: ưu tiên chuỗi không chứa chữ số; trong mảng
+        // phonetics ưu tiên mục có cả text và audio, rồi mới đến mục chỉ có text.
+        if (!phonetic && typeof entry.phonetic === 'string' && isUsableIPA(entry.phonetic)) {
+          phonetic = entry.phonetic.trim();
+        }
+        if (!phonetic && Array.isArray(entry.phonetics)) {
+          const candidates = entry.phonetics.filter(p => p && typeof p.text === 'string' && isUsableIPA(p.text));
+          // Ưu tiên bản có audio nếu cả hai đều là phiên âm hợp lệ; audio không tự chứng minh đó là IPA.
+          const chosen = candidates.find(p => typeof p.audio === 'string' && p.audio.trim()) || candidates[0];
+          if (chosen) phonetic = chosen.text.trim();
+        }
+        if (Array.isArray(entry.meanings)) {
+          for (const meaning of entry.meanings) {
+            for (const d of (meaning.definitions || [])) {
+              if (!definition && d && d.definition) definition = d.definition;
+              if (!example && d && d.example) example = d.example;
+              if (definition && example) break;
+            }
+            if (definition && example) break;
+          }
+        }
+        if (phonetic && definition && example) break;
+      }
+    }
+  } catch (e) {
+    console.warn('Free Dictionary API failed:', e && e.message ? e.message : e);
+  }
+
+  // Nguồn dự phòng Wiktionary: đọc template IPA tiếng Anh nếu Free Dictionary thiếu IPA.
+  if (!phonetic) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 6000);
+      let resWiki;
+      try {
+        resWiki = await fetch(`https://en.wiktionary.org/w/api.php?action=parse&page=${encodeURIComponent(cleanWord)}&prop=wikitext&format=json&origin=*`, { signal: controller.signal });
+      } finally { clearTimeout(timeoutId); }
+      if (resWiki && resWiki.ok) {
+        const wikiData = await resWiki.json();
+        const wikitext = wikiData && wikiData.parse && wikiData.parse.wikitext && wikiData.parse.wikitext['*'] || '';
+        const ipaMatches = [...wikitext.matchAll(/\{\{IPA\|en\|([^}|]+)(?:\|[^}]*)?\}\}/gi)];
+        for (const match of ipaMatches) {
+          const candidate = String(match[1] || '').trim();
+          if (isUsableIPA(candidate)) { phonetic = candidate; break; }
+        }
+      }
+    } catch (e) {
+      console.warn('Wiktionary IPA fallback failed:', e && e.message ? e.message : e);
+    }
+  }
+
+  // Datamuse là nguồn dự phòng cho nghĩa; pronunciation tags thường là ARPAbet nên không ép thành IPA.
+  if (!phonetic || !definition) {
+    try {
+      const controller = new AbortController();
+      const timeoutId = setTimeout(() => controller.abort(), 5000);
+      let res;
+      try {
+        res = await fetch(`https://api.datamuse.com/words?sp=${encodeURIComponent(cleanWord)}&md=pr,d&max=5`, { signal: controller.signal });
+      } finally { clearTimeout(timeoutId); }
+      if (res && res.ok) {
+        const data = await res.json();
+        if (Array.isArray(data) && data.length) {
+          const item = data.find(x => String(x.word || '').toLowerCase() === cleanWord) || data[0];
+          if (!phonetic && item && Array.isArray(item.tags)) {
+            const tag = item.tags.find(t => typeof t === 'string' && t.startsWith('pron:'));
+            if (tag) {
+              let pr = tag.slice(5).trim();
+              // Datamuse có thể trả chuỗi dạng ARPAbet; tuyệt đối không gắn /.../ rồi giả làm IPA.
+              if (isUsableIPA(pr)) {
+                if (pr && !pr.startsWith('/') && !pr.startsWith('[')) pr = `/${pr}/`;
+                phonetic = pr;
+              }
+            }
+          }
+          if (!definition && item && Array.isArray(item.defs) && item.defs.length) {
+            const raw = String(item.defs[0] || '');
+            definition = raw.includes('\t') ? raw.slice(raw.indexOf('\t') + 1).trim() : raw.trim();
+          }
+        }
+      }
+    } catch (e) {
+      console.warn('Datamuse fallback failed:', e && e.message ? e.message : e);
+    }
+  }
+
+  return (phonetic || definition || example) ? { phonetic, definition, example } : null;
+}
+async function autoFetchDictionaryAPI(term = "") {
+  const wordInput = document.getElementById("f-term");
+  const phoneticInput = document.getElementById("f-phonetic");
+  const definitionInput = document.getElementById("f-def");
+  const exampleInput = document.getElementById("f-example");
+
+  const word = (term || (wordInput && wordInput.value) || "").trim();
+  if (!word) {
+    alert("Vui lòng nhập từ vựng trước khi tra nghĩa!");
     return;
   }
-  showToast("Đang tra từ tự động...");
-  const info = await queryFreeDictionaryAPI(term);
-  if (info) {
-    if (info.phonetic) document.getElementById('f-phonetic').value = info.phonetic;
-    if (info.definition) document.getElementById('f-def').value = info.definition;
-    if (info.example) document.getElementById('f-example').value = info.example;
-    showToast("Đã tự động điền thông tin từ vựng!");
-  } else {
-    showToast("Không tìm thấy dữ liệu từ API.");
-  }
-}
 
-// ==== ĐỒNG BỘ TỪ CHROME EXTENSION ====
-function syncFromExtension(isManual = false) {
-  if (isManual) showToast("Đang lấy từ từ Extension...");
-  window.postMessage({ type: "REQUEST_EXTENSION_VOCAB" }, "*");
-}
+  // Giữ ô từ vựng đồng bộ khi hàm được gọi từ kết quả tìm kiếm.
+  if (wordInput) wordInput.value = word;
+  if (definitionInput) definitionInput.placeholder = "Đang tra từ điển...";
 
-window.addEventListener("message", async (event) => {
-  if (event.data && event.data.type === "RESPONSE_EXTENSION_VOCAB") {
-    const rawVocab = event.data.data || [];
-    if (rawVocab.length === 0) {
-      showToast("Extension hiện chưa có từ mới.");
+  try {
+    // Dùng chung hàm tra cứu đã có: Free Dictionary API, sau đó dự phòng Datamuse.
+    const result = await queryDictionaryAPI(word);
+    if (!result) {
+      if (definitionInput) definitionInput.placeholder = "Không tìm thấy nghĩa; bạn có thể nhập thủ công.";
+      if (phoneticInput) phoneticInput.placeholder = "Không tìm thấy phiên âm";
+      showToast("Không tìm thấy dữ liệu cho từ này. Bạn có thể nhập thủ công.");
       return;
     }
 
-    let addedCount = 0;
-    for (const item of rawVocab) {
-      const exists = state.vocab.find(v => v.term.toLowerCase() === item.word.toLowerCase());
-      if (!exists) {
-        // Tự động kéo định nghĩa từ chuỗi API tích hợp
-        const apiData = await queryFreeDictionaryAPI(item.word);
+    if (phoneticInput && result.phonetic) phoneticInput.value = result.phonetic;
+    if (definitionInput && result.definition) definitionInput.value = result.definition;
+    if (exampleInput && result.example) exampleInput.value = result.example;
+    if (definitionInput) definitionInput.placeholder = "Ví dụ: Lasting for a very short time";
+    if (phoneticInput) phoneticInput.placeholder = "Ví dụ: /ɪˈfemərəl/";
+    showToast(result.phonetic && result.definition ? "Đã tra được IPA và nghĩa!" : result.phonetic ? "Đã tra được IPA; nghĩa chưa có." : result.definition ? "Đã tra được nghĩa; IPA chưa có cho từ này." : "API không trả về dữ liệu phù hợp.");
+  } catch (error) {
+    console.error("Lỗi khi tra từ điển:", error);
+    if (definitionInput) definitionInput.placeholder = "Lỗi kết nối; hãy thử lại hoặc nhập thủ công.";
+    showToast("Không kết nối được API từ điển. Hãy thử lại sau.");
+  }
+}
 
-        state.vocab.unshift({
-          id: 'ext_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
-          term: item.word,
-          phonetic: apiData ? apiData.phonetic : "",
-          def: apiData ? apiData.definition : "Chưa có nghĩa (Sửa để bổ sung)",
-          example: apiData && apiData.example ? apiData.example : (item.source ? `Nguồn: ${item.source}` : ""),
-          group: 'Từ Extension',
-          status: 'red',
-          dateAdded: item.date || new Date().toISOString(),
-          lastReviewed: new Date().toISOString(),
-          reviewCount: 0,
-          nextReviewDate: new Date().toISOString()
-        });
-        addedCount++;
+function addWordFromSearch(term) {
+  openWordModal();
+  document.getElementById('f-term').value = term;
+  autoFetchDictionaryAPI(term);
+}
+
+function syncFromExtension(isManual = false) {
+  if (isSyncing) {
+    if (isManual) showToast("Đang đồng bộ, vui lòng chờ...");
+    return;
+  }
+
+  if (syncMessageHandler) {
+    window.removeEventListener("message", syncMessageHandler);
+    syncMessageHandler = null;
+  }
+  if (syncTimeoutId) {
+    clearTimeout(syncTimeoutId);
+    syncTimeoutId = null;
+  }
+
+  isSyncing = true;
+  if (isManual) showToast("Đang lấy từ từ Extension...");
+
+  let hasResponded = false;
+
+  syncMessageHandler = async (event) => {
+    if (event.data && event.data.type === "RESPONSE_EXTENSION_VOCAB") {
+      if (hasResponded) return;
+      hasResponded = true;
+      isSyncing = false;
+      
+      if (syncTimeoutId) {
+        clearTimeout(syncTimeoutId);
+        syncTimeoutId = null;
+      }
+      window.removeEventListener("message", syncMessageHandler);
+      syncMessageHandler = null;
+
+      const rawVocab = event.data.data || [];
+      if (rawVocab.length === 0) {
+        showToast("Extension hiện chưa có từ mới.");
+        return;
+      }
+
+      let addedCount = 0;
+      for (const item of rawVocab) {
+        const exists = state.vocab.find(v => v.term.toLowerCase() === item.word.toLowerCase());
+        if (!exists) {
+          const apiData = await queryDictionaryAPI(item.word);
+          state.vocab.unshift({
+            id: 'ext_' + Date.now() + '_' + Math.random().toString(36).substring(2, 6),
+            term: item.word,
+            phonetic: apiData ? apiData.phonetic : "",
+            def: apiData ? apiData.definition : "Chưa có nghĩa Anh-Anh",
+            example: apiData && apiData.example ? apiData.example : (item.source ? `Source: ${item.source}` : ""),
+            group: 'Từ Extension',
+            status: 'red',
+            dateAdded: item.date || new Date().toISOString(),
+            reviewCount: 0,
+            nextReviewDate: new Date().toISOString(),
+            difficulty: 5,
+            stability: 1,
+            wrongCount: 0,
+            isLeech: false
+          });
+          addedCount++;
+        }
+      }
+
+      if (addedCount > 0) {
+        if (!state.groups.includes('Từ Extension')) state.groups.push('Từ Extension');
+        saveState();
+        renderVocabGrid();
+        showToast(`Đã đồng bộ ${addedCount} từ vựng từ Extension!`);
+      } else {
+        showToast("Dữ liệu đã mới nhất!");
       }
     }
+  };
 
-    if (addedCount > 0) {
-      if (!state.groups.includes('Từ Extension')) state.groups.push('Từ Extension');
-      saveState();
-      renderVocabGrid();
-      showToast(`Đã đồng bộ ${addedCount} từ vựng từ Extension!`);
-    } else {
-      showToast("Dữ liệu đã mới nhất!");
+  syncTimeoutId = setTimeout(() => {
+    if (!hasResponded) {
+      hasResponded = true;
+      isSyncing = false;
+      if (syncMessageHandler) {
+        window.removeEventListener("message", syncMessageHandler);
+        syncMessageHandler = null;
+      }
+      if (isManual) {
+        showToast("Không nhận được phản hồi từ Extension.");
+      }
+    }
+  }, 3000);
+
+  window.addEventListener("message", syncMessageHandler);
+  window.postMessage({ type: "REQUEST_EXTENSION_VOCAB" }, "*");
+}
+
+// Nhắc ôn tập trong giao diện và bằng Browser Notification khi trang đang mở.
+let lastReviewNotificationKey = '';
+let reviewReminderTimer = null;
+
+function getDueReviewItems(now = Date.now()) {
+  return state.vocab.filter(item => isCardDue(item, now));
+}
+
+function updateReviewReminder(showBrowserNotification = false) {
+  const banner = document.getElementById('reviewReminderBanner');
+  if (!banner) return;
+  const dueItems = getDueReviewItems();
+  const title = document.getElementById('reviewReminderTitle');
+  const message = document.getElementById('reviewReminderText');
+  const enableButton = document.getElementById('enableBrowserNotifications');
+
+  if (dueItems.length === 0) {
+    banner.classList.add('hidden');
+    lastReviewNotificationKey = '';
+    return;
+  }
+
+  banner.classList.remove('hidden');
+  if (title) title.innerText = `Đã đến giờ ôn tập · ${dueItems.length} từ`;
+  if (message) {
+    const examples = dueItems.slice(0, 3).map(item => item.term).filter(Boolean).join(', ');
+    message.innerText = examples
+      ? `Bạn có ${dueItems.length} từ đến hạn${dueItems.length > 3 ? ` (ví dụ: ${examples}…)` : `: ${examples}`}.`
+      : `Bạn có ${dueItems.length} từ vựng đến hạn ôn tập.`;
+  }
+
+  if (enableButton) {
+    enableButton.classList.toggle('hidden', !('Notification' in window) || Notification.permission === 'granted');
+    if (!('Notification' in window)) enableButton.innerText = 'Trình duyệt không hỗ trợ';
+    else if (Notification.permission === 'denied') enableButton.innerText = 'Thông báo đã bị chặn';
+    else enableButton.innerText = 'Bật thông báo trình duyệt';
+    enableButton.disabled = !('Notification' in window) || Notification.permission === 'denied';
+    enableButton.classList.toggle('opacity-50', enableButton.disabled);
+  }
+
+  if (showBrowserNotification && 'Notification' in window && Notification.permission === 'granted') {
+    const key = `${new Date().toDateString()}-${dueItems.length}-${dueItems.map(item => item.id).sort().join(',')}`;
+    if (key !== lastReviewNotificationKey) {
+      try {
+        const notification = new Notification(`Đến giờ ôn ${dueItems.length} từ vựng`, {
+          body: 'Mở ứng dụng để ôn tập và củng cố trí nhớ.',
+          tag: 'vocab-review-due'
+        });
+        notification.onclick = () => {
+          window.focus();
+          switchView('reviewhub');
+          notification.close();
+        };
+        lastReviewNotificationKey = key;
+      } catch (e) {
+        // Một số trình duyệt chỉ cho phép Notification sau thao tác người dùng.
+      }
     }
   }
-});
+}
+
+async function enableReviewNotifications() {
+  if (!('Notification' in window)) {
+    showToast('Trình duyệt này không hỗ trợ thông báo.');
+    return;
+  }
+  try {
+    const permission = await Notification.requestPermission();
+    if (permission === 'granted') {
+      showToast('Đã bật thông báo ôn tập!');
+      updateReviewReminder(true);
+    } else if (permission === 'denied') {
+      showToast('Thông báo bị chặn. Hãy bật quyền trong cài đặt trình duyệt.');
+      updateReviewReminder(false);
+    } else {
+      showToast('Bạn chưa cấp quyền thông báo.');
+    }
+    updateReviewReminder(false);
+  } catch (e) {
+    showToast('Không thể bật thông báo trên trình duyệt này.');
+  }
+}
+
+function startReviewReminderChecks() {
+  updateReviewReminder(false);
+  if (reviewReminderTimer) clearInterval(reviewReminderTimer);
+  // Kiểm tra mỗi phút khi trang đang mở; không cần backend.
+  reviewReminderTimer = setInterval(() => updateReviewReminder(true), 60000);
+  document.addEventListener('visibilitychange', () => {
+    if (!document.hidden) updateReviewReminder(true);
+  });
+}
 
 function loadState() {
   try {
     const saved = localStorage.getItem('vocab_app_v4');
-    if (saved) state = JSON.parse(saved);
-    else {
+    if (saved) {
+      state = JSON.parse(saved);
+      state.vocab.forEach(v => {
+        if (!v.nextReviewDate) v.nextReviewDate = new Date().toISOString();
+        if (!Number.isFinite(Number(v.reviewCount))) v.reviewCount = 0;
+        if (!Array.isArray(v.reviewHistory)) v.reviewHistory = [];
+        if (!v.group) v.group = 'Chưa phân nhóm';
+
+        // SRS v2 migration: không làm mất dữ liệu localStorage cũ.
+        if (!Number.isFinite(Number(v.difficulty))) v.difficulty = 5;
+        if (!Number.isFinite(Number(v.stability))) v.stability = 1;
+        if (!Number.isFinite(Number(v.wrongCount))) v.wrongCount = 0;
+        v.difficulty = Math.max(1, Math.min(10, Number(v.difficulty)));
+        v.stability = Math.max(0.5, Math.min(365, Number(v.stability)));
+        v.wrongCount = Math.max(0, Number(v.wrongCount));
+        v.isLeech = v.wrongCount >= 8;
+      });
+    } else {
       state = { groups: ['Từ Extension', 'IELTS 7.0', 'Giao tiếp'], vocab: [] }; 
       saveState(); 
     }
@@ -530,6 +1079,7 @@ function loadState() {
 function saveState() {
   localStorage.setItem('vocab_app_v4', JSON.stringify(state));
   updateStats();
+  updateReviewReminder(false);
 }
 
 function updateStats() {
@@ -583,13 +1133,8 @@ function switchView(viewName) {
     n.classList.toggle('text-slate-600', !isTarget);
     const svg = n.querySelector('svg');
     if (svg) {
-      if (isTarget) {
-        svg.classList.remove('text-slate-400');
-        svg.classList.add('text-amber-500');
-      } else {
-        svg.classList.remove('text-amber-500');
-        svg.classList.add('text-slate-400');
-      }
+      svg.classList.toggle('text-amber-500', isTarget);
+      svg.classList.toggle('text-slate-400', !isTarget);
     }
   });
 
@@ -651,15 +1196,32 @@ function renderVocabGrid() {
   const grid = document.getElementById('vocabGrid');
   grid.innerHTML = '';
 
+  const now = Date.now();
   const filtered = state.vocab.filter(v => {
     const matchSearch = v.term.toLowerCase().includes(searchTerm) || v.def.toLowerCase().includes(searchTerm);
     const matchStatus = currentStatusFilter === 'all' || v.status === currentStatusFilter;
     const matchGroup = currentGroupFilter === 'all' || v.group === currentGroupFilter;
     return matchSearch && matchStatus && matchGroup;
-  });
+  }).sort((a, b) => getPriorityScore(b, now) - getPriorityScore(a, now));
 
+  // TÍNH NĂNG TỰ ĐỘNG GỢI Ý THÊM TỪ KHI TÌM KIẾM KHÔNG THẤY
   if (filtered.length === 0) {
-    grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-xs font-semibold">Chưa có từ vựng nào. Hãy thêm từ vựng hoặc đồng bộ từ Extension!</div>`;
+    if (searchTerm) {
+      const safeTerm = escapeHtml(searchTerm);
+      grid.innerHTML = `
+        <div class="col-span-full text-center py-12 space-y-3.5 bg-white/50 backdrop-blur-md rounded-3xl border border-white/80 p-6 shadow-xs">
+          <p class="text-slate-600 text-sm font-semibold">Không tìm thấy từ "<span class="font-extrabold text-slate-800">${safeTerm}</span>" trong bộ từ vựng của bạn.</p>
+          <div>
+            <button onclick="addWordFromSearch('${safeTerm}')" class="px-5 py-2.5 rounded-2xl bg-amber-400 hover:bg-amber-300 text-slate-900 font-extrabold text-xs shadow-md transition-all active:scale-95 inline-flex items-center gap-2">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M12 6v12m-6-6h12"/></svg>
+              <span>Thêm từ "${safeTerm}" ngay?</span>
+            </button>
+          </div>
+        </div>
+      `;
+    } else {
+      grid.innerHTML = `<div class="col-span-full text-center py-12 text-slate-400 text-xs font-semibold">Chưa có từ vựng nào. Hãy thêm từ vựng hoặc đồng bộ từ Extension!</div>`;
+    }
     return;
   }
 
@@ -681,17 +1243,26 @@ function renderVocabGrid() {
         </div>
 
         <div>
-          <div class="flex items-baseline justify-between gap-2">
-            <h3 class="font-extrabold text-base text-slate-800">${v.term}</h3>
-            <span class="text-[10px] text-slate-400 font-bold bg-slate-100 px-1.5 py-0.5 rounded-md">${v.reviewCount || 0} lần ôn</span>
+          <div class="flex items-center justify-between gap-2">
+            <h3 class="font-extrabold text-base text-slate-800">${escapeHtml(v.term)}</h3>
+            <div class="flex items-center gap-1">
+              ${v.isLeech ? `<span class="text-[10px] font-extrabold text-rose-700 bg-rose-50 px-1.5 py-0.5 rounded-md border border-rose-100" title="Sai từ 8 lần trở lên">🔥 Từ khó nhớ</span>` : ''}
+              <span class="text-[10px] text-slate-400 font-bold bg-slate-100 px-1.5 py-0.5 rounded-md">${v.reviewCount || 0} lần ôn</span>
+            </div>
           </div>
-          ${v.phonetic ? `<p class="text-[11px] text-slate-400 font-semibold">${v.phonetic}</p>` : ''}
-          <p class="font-bold text-slate-700 text-xs mt-1.5">${v.def}</p>${v.example ? `<p class="text-[11px] text-slate-500 italic mt-1 leading-relaxed bg-amber-50/50 p-2 rounded-xl">"${v.example}"</p>` : ''}
+          ${v.phonetic ? `<p class="ipa-text text-[13px] text-slate-500">${escapeHtml(v.phonetic)}</p>` : ''}
+          <p class="font-bold text-slate-700 text-xs mt-1.5">${escapeHtml(v.def)}</p>
+          ${progressMarkup(v, true)}
+          <div class="flex items-center justify-between gap-2 mt-1.5">
+            <span class="text-[10px] font-bold text-slate-500">Success: ${getSuccessRate(v)}%</span>
+            <span class="text-[10px] font-bold text-slate-400">Priority: ${Math.round(getPriorityScore(v, now))}</span>
+          </div>
+          ${v.example ? `<p class="text-[11px] text-slate-500 italic mt-1 leading-relaxed bg-amber-50/50 p-2 rounded-xl">"${escapeHtml(v.example)}"</p>` : ''}
         </div>
       </div>
 
       <div class="pt-3 mt-3 border-t border-slate-100 flex items-center justify-between text-xs">
-        <span class="text-[10px] font-bold text-amber-800 bg-amber-100/60 px-2.5 py-1 rounded-lg">${v.group || 'Tất cả'}</span>
+        <span class="text-[10px] font-bold text-amber-800 bg-amber-100/60 px-2.5 py-1 rounded-lg">${escapeHtml(v.group || 'Chưa phân nhóm')}</span>
         <div class="flex gap-1.5">
           <button data-id="${v.id}" class="btn-edit p-1.5 text-slate-400 hover:text-amber-600 transition-colors rounded-lg hover:bg-slate-50" title="Sửa">
             <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"/></svg>
@@ -732,17 +1303,36 @@ function renderGroups() {
   const grid = document.getElementById('groupGrid');
   grid.innerHTML = '';
   state.groups.forEach(g => {
-    const count = state.vocab.filter(v => v.group === g).length;
+    const groupWords = state.vocab.filter(v => v.group === g);
+    const count = groupWords.length;
+    const groupMastery = count ? Math.round(groupWords.reduce((sum, v) => sum + getMastery(v), 0) / count) : 0;
     const card = document.createElement('div');
-    card.className = 'bg-white/80 backdrop-blur-md rounded-2xl p-5 border border-white/90 soft-shadow cursor-pointer hover:-translate-y-1 hover:bg-white transition-all space-y-2.5';
-    card.onclick = () => { currentGroupFilter = g; switchView('vocab'); };
+    card.className = 'bg-white/80 backdrop-blur-md rounded-2xl p-5 border border-white/90 soft-shadow flex flex-col justify-between hover:-translate-y-1 hover:bg-white transition-all space-y-3';
     card.innerHTML = `
-      <div class="w-10 h-10 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-800 font-bold text-lg shadow-xs">📁</div>
-      <h3 class="font-bold text-slate-800 text-sm sm:text-base">${g}</h3>
-      <p class="text-xs text-slate-400 font-medium">${count} từ vựng thuộc nhóm này</p>
+      <div class="cursor-pointer space-y-2" onclick="currentGroupFilter='${escapeHtml(g)}'; switchView('vocab');">
+        <div class="w-10 h-10 rounded-2xl bg-amber-100 flex items-center justify-center text-amber-800 font-bold text-lg shadow-xs">📁</div>
+        <h3 class="font-bold text-slate-800 text-sm sm:text-base">${escapeHtml(g)}</h3>
+        <p class="text-xs text-slate-400 font-medium">${count} từ vựng thuộc nhóm này</p>${progressMarkup({status: groupMastery >= 75 ? 'cyan' : groupMastery >= 45 ? 'yellow' : 'red', reviewCount:0}, true, groupMastery).replace(/Mức độ thuộc/g, 'Tiến độ nhóm').replace(/title="[^"]*"/,'')}<p class="text-[10px] text-slate-500">Trung bình nhóm: <b>${groupMastery}%</b></p>
+      </div>
+      <div class="pt-2 border-t border-slate-100 flex justify-end">
+        <button onclick="deleteGroup('${escapeHtml(g)}')" class="text-[11px] font-bold text-rose-600 hover:underline">Xóa nhóm</button>
+      </div>
     `;
     grid.appendChild(card);
   });
+}
+
+function deleteGroup(groupName) {
+  if (confirm(`Bạn có chắc muốn xóa nhóm "${groupName}"? Các từ thuộc nhóm này sẽ chuyển về "Chưa phân nhóm".`)) {
+    state.groups = state.groups.filter(g => g !== groupName);
+    state.vocab.forEach(v => {
+      if (v.group === groupName) v.group = 'Chưa phân nhóm';
+    });
+    if (currentGroupFilter === groupName) currentGroupFilter = 'all';
+    saveState();
+    renderGroups();
+    showToast(`Đã xóa nhóm "${groupName}"`);
+  }
 }
 
 document.getElementById('addGroupBtn').onclick = () => {
@@ -771,7 +1361,7 @@ function renderSchedule() {
   const yr = calMonth.getFullYear();
   const mo = calMonth.getMonth();
   const monthNames = ["Tháng 1", "Tháng 2", "Tháng 3", "Tháng 4", "Tháng 5", "Tháng 6", "Tháng 7", "Tháng 8", "Tháng 9", "Tháng 10", "Tháng 11", "Tháng 12"];
-  calTitle.innerText = `${monthNames[mo]}${yr}`;
+  calTitle.innerText = `${monthNames[mo]} ${yr}`;
 
   calGrid.innerHTML = `
     <div class="font-bold text-slate-400 py-1">T2</div>
@@ -800,7 +1390,7 @@ function renderSchedule() {
     dayEl.innerText = d;
 
     const cellDateStr = new Date(yr, mo, d).toDateString();
-    const dueCount = state.vocab.filter(v => new Date(v.nextReviewDate).toDateString() === cellDateStr).length;
+    const dueCount = state.vocab.filter(v => v.nextReviewDate && new Date(v.nextReviewDate).toDateString() === cellDateStr).length;
 
     if (dueCount > 0) {
       const b = document.createElement('span');
@@ -811,24 +1401,37 @@ function renderSchedule() {
     calGrid.appendChild(dayEl);
   }
 
-  const todayStart = new Date(today.getFullYear(), today.getMonth(), today.getDate()).getTime();
-  const dueWords = state.vocab.filter(v => {
-    const d = new Date(v.nextReviewDate);
-    return new Date(d.getFullYear(), d.getMonth(), d.getDate()).getTime() <= todayStart;
+  const now = Date.now();
+  const isDueNow = v => isCardDue(v, now);
+  const dueCountNow = state.vocab.filter(isDueNow).length;
+  const scheduleWords = [...state.vocab].sort((a, b) => {
+    const dueDiff = Number(isDueNow(b)) - Number(isDueNow(a));
+    return dueDiff || getPriorityScore(b, now) - getPriorityScore(a, now);
   });
 
-  dueSummary.innerText = `Có ${dueWords.length} từ vựng cần ôn tập ngay`;
+  dueSummary.innerText = `${dueCountNow} từ cần ôn ngay · ${state.vocab.length} từ trong lịch trình`;
   dueList.innerHTML = '';
 
-  if (dueWords.length === 0) {
-    dueList.innerHTML = `<div class="text-center py-6 text-xs text-slate-400 font-medium">Bạn đã hoàn thành bài ôn hôm nay! 🎉</div>`;
+  if (scheduleWords.length === 0) {
+    dueList.innerHTML = `<div class="text-center py-6 text-xs text-slate-400 font-medium">Chưa có từ vựng. Hãy thêm từ để bắt đầu ôn tập nhé!</div>`;
   } else {
-    dueWords.forEach(w => {
+    scheduleWords.forEach(w => {
       const item = document.createElement('div');
-      item.className = 'flex items-center justify-between p-2.5 rounded-xl bg-white/70 border border-white/80 text-xs';
+      const mastery = getMastery(w, now);
+      const nextAt = w.nextReviewDate ? new Date(w.nextReviewDate).getTime() : 0;
+      const due = isDueNow(w);
+      const overdueMs = now - nextAt;
+      let dueLabel;
+      if (mastery < 45) dueLabel = 'Dễ quên · Ôn ngay';
+      else if (due && overdueMs > DAY) dueLabel = `Trễ ${Math.floor(overdueMs / DAY)} ngày`;
+      else if (due) dueLabel = 'Cần ôn hôm nay';
+      else dueLabel = 'Sắp đến hạn';
+      const badgeClass = due ? (mastery < 45 ? 'text-rose-600 bg-rose-50' : 'text-amber-700 bg-amber-50') : 'text-emerald-700 bg-emerald-50';
+      item.className = 'p-3 rounded-xl bg-white/70 border border-white/80 text-xs space-y-1.5';
       item.innerHTML = `
-        <span class="font-bold text-slate-800">${w.term}</span>
-        <span class="text-rose-600 font-bold text-[10px] bg-rose-50 px-2 py-0.5 rounded-md border border-rose-100">Cần ôn</span>
+        <div class="flex items-center justify-between gap-2"><span class="font-bold text-slate-800">${escapeHtml(w.term)}</span><span class="text-[10px] font-bold ${badgeClass} px-2 py-0.5 rounded-md">${dueLabel}</span></div>
+        ${progressMarkup(w, true, mastery)}
+        <div class="flex items-center justify-between gap-2 text-[10px] text-slate-500"><span class="font-semibold">${masteryLabel(mastery)}</span><span>Ôn tiếp: ${w.nextReviewDate && Number.isFinite(nextAt) ? new Date(nextAt).toLocaleString('vi-VN', {day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}) : 'Chưa đặt lịch'}</span></div>
       `;
       dueList.appendChild(item);
     });
@@ -851,7 +1454,8 @@ document.querySelectorAll('.review-opt').forEach(opt => {
 });
 
 function initFlashcard() {
-  flashDeck = [...state.vocab];
+  const queues = getLearningQueues();
+  flashDeck = queues.allCards;
   flashIdx = 0;
   flashFlipped = false;
   renderFlashCard();
@@ -873,12 +1477,12 @@ function renderFlashCard() {
     <div id="flashCardWrapper" class="w-full h-60 perspective-1000 cursor-pointer">
       <div id="flashCardInner" class="relative w-full h-full transform-style-3d rounded-3xl soft-shadow-lg ${flashFlipped ? 'rotate-y-180' : ''}">
         <div class="absolute inset-0 w-full h-full bg-white rounded-3xl p-6 border border-white/80 backface-hidden flex flex-col items-center justify-center text-center">
-          <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full mb-2">${cur.group || 'Tất cả'}</span>
-          <h2 class="text-2xl font-extrabold text-slate-800">${cur.term}</h2>${cur.phonetic ? `<p class="text-xs text-slate-400 mt-1 font-medium">${cur.phonetic}</p>` : ''}
+          <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full mb-2">${escapeHtml(cur.group || 'Chưa phân nhóm')}</span>
+          <h2 class="text-2xl font-extrabold text-slate-800">${escapeHtml(cur.term)}</h2>${cur.phonetic ? `<p class="ipa-text text-sm text-slate-500 mt-1">${escapeHtml(cur.phonetic)}</p>` : ''}
           <p class="text-[10px] text-slate-400 mt-6 font-bold">(Chạm để lật đáp án)</p>
         </div>
         <div class="absolute inset-0 w-full h-full bg-amber-50 rounded-3xl p-6 border border-amber-200/60 backface-hidden rotate-y-180 flex flex-col items-center justify-center text-center">
-          <h3 class="text-lg font-extrabold text-amber-800">${cur.def}</h3>${cur.example ? `<p class="text-xs text-slate-600 italic mt-3 bg-white/70 p-3 rounded-2xl border border-amber-100 max-w-xs">"${cur.example}"</p>` : ''}
+          <h3 class="text-sm sm:text-base font-bold text-amber-900 leading-relaxed">${escapeHtml(cur.def)}</h3>${cur.example ? `<p class="text-xs text-slate-600 italic mt-3 bg-white/70 p-3 rounded-2xl border border-amber-100 max-w-xs">"${escapeHtml(cur.example)}"</p>` : ''}
         </div>
       </div>
     </div>
@@ -889,7 +1493,7 @@ function renderFlashCard() {
     </div>
     <div class="flex items-center gap-4 text-xs font-bold text-slate-600">
       <button id="btnPrevFlash" class="px-3 py-1.5 rounded-xl bg-white shadow-xs border border-slate-200">‹ Trước</button>
-      <span>${flashIdx + 1} /${flashDeck.length}</span>
+      <span>${flashIdx + 1} / ${flashDeck.length}</span>
       <button id="btnNextFlash" class="px-3 py-1.5 rounded-xl bg-white shadow-xs border border-slate-200">Tiếp ›</button>
     </div>
   `;
@@ -908,22 +1512,18 @@ function renderFlashCard() {
 function updateMastery(st) {
   const item = flashDeck[flashIdx];
   if (!item) return;
-  item.status = st;
-  item.reviewCount = (item.reviewCount || 0) + 1;
-  item.lastReviewed = new Date().toISOString();
 
-  let days = st === 'cyan' ? 10 : (st === 'yellow' ? 3 : 1);
-  item.nextReviewDate = new Date(Date.now() + days * 86400000).toISOString();
-  saveState();
-  showToast('Đã lưu kết quả!');
+  const rating = st === 'red' ? 'again' : st === 'yellow' ? 'hard' : 'good';
+  processWordReview(item.id, rating);
 
+  showToast(`Đã lưu: ${STATUS_COLORS[st].label}`);
   flashIdx = (flashIdx + 1) % flashDeck.length;
   flashFlipped = false;
   renderFlashCard();
 }
 
 function initSpelling() {
-  spellDeck = [...state.vocab].sort(() => Math.random() - 0.5);
+  spellDeck = shuffleArray(getReviewQueue());
   spellIdx = 0;
   renderSpelling();
 }
@@ -931,7 +1531,10 @@ function initSpelling() {
 function renderSpelling() {
   const box = document.getElementById('spellBox');
   box.innerHTML = '';
-  if (spellDeck.length === 0) return;
+  if (spellDeck.length === 0) {
+    box.innerHTML = `<p class="text-slate-400 text-xs font-semibold">Chưa có từ vựng nào.</p>`;
+    return;
+  }
 
   const cur = spellDeck[spellIdx];
   const wrap = document.createElement('div');
@@ -939,12 +1542,12 @@ function renderSpelling() {
 
   wrap.innerHTML = `
     <div class="p-4 rounded-2xl bg-white/80 border border-white shadow-xs">
-      <h3 class="text-base font-bold text-slate-800">"${cur.def}"</h3>
+      <h3 class="text-sm sm:text-base font-bold text-slate-800 leading-relaxed">"${escapeHtml(cur.def)}"</h3>
     </div>
     <button id="btnAudioSpelling" class="px-4 py-2 rounded-xl bg-white text-xs font-bold text-amber-700 shadow-xs hover:bg-amber-50 border border-amber-200">🔊 Nghe phát âm</button>
     <input id="spellInp" type="text" placeholder="Gõ từ tiếng Anh..." class="w-full text-center py-3 rounded-2xl bg-white border border-slate-200 text-base font-extrabold text-slate-800 focus:outline-none focus:ring-2 focus:ring-amber-400">
     <div id="spellFb" class="text-xs font-bold min-h-[20px]"></div>
-    <button id="btnCheckSpelling" class="px-6 py-2.5 rounded-xl bg-slate-800 text-white font-bold text-xs shadow-md transition-all">Kiểm tra</button>
+    <button id="btnCheckSpelling" class="px-6 py-2.5 rounded-xl bg-slate-800 text-white font-bold text-xs shadow-md transition-all active:scale-95">Kiểm tra</button>
   `;
   box.appendChild(wrap);
 
@@ -961,23 +1564,39 @@ function renderSpelling() {
   }, 100);
 }
 
+let isSpellingChecking = false;
 function checkSpelling() {
+  if (isSpellingChecking) return;
   const inp = document.getElementById('spellInp');
   const fb = document.getElementById('spellFb');
   if (!inp || !fb) return;
 
-  if (inp.value.trim().toLowerCase() === spellDeck[spellIdx].term.trim().toLowerCase()) {
-    fb.className = 'text-emerald-600 font-bold text-xs';
-    fb.innerText = ' chính xác! Rất tuyệt vời!';
-    setTimeout(() => { spellIdx = (spellIdx + 1) % spellDeck.length; renderSpelling(); }, 900);
+  isSpellingChecking = true;
+  const cur = spellDeck[spellIdx];
+  const isCorrect = inp.value.trim().toLowerCase() === cur.term.trim().toLowerCase();
+  const updatedItem = processWordReview(cur.id, isCorrect);
+
+  if (isCorrect) {
+    fb.className = 'text-emerald-600 font-bold text-xs mt-2';
+    fb.innerText = `✓ Chính xác! Mức thuộc: ${STATUS_COLORS[updatedItem.status].label}`;
+    setTimeout(() => {
+      isSpellingChecking = false;
+      spellIdx = (spellIdx + 1) % spellDeck.length;
+      renderSpelling();
+    }, 1000);
   } else {
-    fb.className = 'text-rose-600 font-bold text-xs';
-    fb.innerText = `❌ Chưa chính xác! Đáp án đúng: "${spellDeck[spellIdx].term}"`;
+    fb.className = 'text-rose-600 font-bold text-xs mt-2';
+    fb.innerText = `✕ Chưa chính xác! Đáp án đúng: "${cur.term}"`;
+    setTimeout(() => {
+      isSpellingChecking = false;
+      spellIdx = (spellIdx + 1) % spellDeck.length;
+      renderSpelling();
+    }, 1800);
   }
 }
 
 function initQuiz() {
-  quizDeck = [...state.vocab].sort(() => Math.random() - 0.5);
+  quizDeck = shuffleArray(getReviewQueue());
   quizIdx = 0;
   quizScore = 0;
   quizAnswered = false;
@@ -988,11 +1607,16 @@ function renderQuiz() {
   const box = document.getElementById('quizBox');
   box.innerHTML = '';
 
+  if (quizDeck.length === 0) {
+    box.innerHTML = `<p class="text-slate-400 text-xs font-semibold">Chưa có từ vựng nào.</p>`;
+    return;
+  }
+
   if (quizIdx >= quizDeck.length) {
     box.innerHTML = `
       <div class="text-center space-y-3">
         <h2 class="text-2xl font-bold text-slate-800">🏆 Hoàn Thành Bài Test!</h2>
-        <p class="text-sm font-semibold text-slate-600">Bạn trả lời đúng ${quizScore} /${quizDeck.length} câu</p>
+        <p class="text-sm font-semibold text-slate-600">Bạn trả lời đúng ${quizScore} / ${quizDeck.length} câu</p>
         <button onclick="initQuiz()" class="px-5 py-2.5 rounded-xl bg-amber-400 hover:bg-amber-300 font-bold text-xs text-slate-900 shadow-md">Thử lại bài test</button>
       </div>
     `;
@@ -1001,21 +1625,22 @@ function renderQuiz() {
 
   const cur = quizDeck[quizIdx];
   let options = [cur.def];
-  const others = state.vocab.filter(v => v.id !== cur.id).map(v => v.def);
+  const others = state.vocab.filter(v => v.id !== cur.id && v.def !== cur.def).map(v => v.def);
+  
   while (options.length < Math.min(4, state.vocab.length) && others.length > 0) {
-    const r = others.splice(Math.floor(Math.random() * others.length), 1)[0];
-    if (!options.includes(r)) options.push(r);
+    const rIdx = Math.floor(Math.random() * others.length);
+    options.push(others.splice(rIdx, 1)[0]);
   }
-  options.sort(() => Math.random() - 0.5);
+  options = shuffleArray(options);
 
   const wrap = document.createElement('div');
   wrap.className = 'w-full max-w-sm space-y-4';
-  let optionsHtml = options.map((opt, i) => `<button data-opt-idx="${i}" class="btn-quiz-opt w-full text-left p-3.5 rounded-2xl bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:border-amber-400 transition-all shadow-xs">${opt}</button>`).join('');
+  let optionsHtml = options.map((opt, i) => `<button data-opt-idx="${i}" class="btn-quiz-opt w-full text-left p-3.5 rounded-2xl bg-white border border-slate-200 text-xs font-bold text-slate-700 hover:border-amber-400 transition-all shadow-xs">${escapeHtml(opt)}</button>`).join('');
 
   wrap.innerHTML = `
     <div class="text-center space-y-1">
-      <span class="text-[11px] font-bold text-slate-400">Câu ${quizIdx + 1} /${quizDeck.length}</span>
-      <h2 class="text-2xl font-extrabold text-slate-800">${cur.term}</h2>
+      <span class="text-[11px] font-bold text-slate-400">Câu ${quizIdx + 1} / ${quizDeck.length}</span>
+      <h2 class="text-2xl font-extrabold text-slate-800">${escapeHtml(cur.term)}</h2>
     </div>
     <div class="space-y-2">${optionsHtml}</div>
   `;
@@ -1033,17 +1658,28 @@ function answerQuiz(btn, selected, correct) {
   if (quizAnswered) return;
   quizAnswered = true;
 
-  if (selected === correct) {
-    btn.className = 'w-full text-left p-3.5 rounded-2xl bg-emerald-500 text-white text-xs font-bold border border-emerald-500 shadow-xs';
+  const cur = quizDeck[quizIdx];
+  const isCorrect = (selected === correct);
+  const updatedItem = processWordReview(cur.id, isCorrect);
+
+  if (isCorrect) {
+    btn.className = 'w-full text-left p-3.5 rounded-2xl bg-emerald-500 text-white text-xs font-bold border border-emerald-500 shadow-xs flex items-center justify-between';
+    btn.innerHTML += `<span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-md">✓ ${STATUS_COLORS[updatedItem.status].label}</span>`;
     quizScore++;
   } else {
-    btn.className = 'w-full text-left p-3.5 rounded-2xl bg-rose-500 text-white text-xs font-bold border border-rose-500 shadow-xs';
+    btn.className = 'w-full text-left p-3.5 rounded-2xl bg-rose-500 text-white text-xs font-bold border border-rose-500 shadow-xs flex items-center justify-between';
+    btn.innerHTML += `<span class="text-[10px] bg-white/20 px-2 py-0.5 rounded-md">✕ Cần ôn</span>`;
+
+    document.querySelectorAll('.btn-quiz-opt').forEach(b => {
+      if (b.innerText.trim() === correct) {
+        b.className = 'w-full text-left p-3.5 rounded-2xl bg-emerald-100 border border-emerald-400 text-emerald-800 text-xs font-bold shadow-xs';
+      }
+    });
   }
 
-  setTimeout(() => { quizIdx++; quizAnswered = false; renderQuiz(); }, 900);
+  setTimeout(() => { quizIdx++; quizAnswered = false; renderQuiz(); }, 1200);
 }
 
-// ==== THUẬT TOÁN LEVENSHTEIN DISTANCE VÀ KIỂM TRA PHÁT ÂM (BETA) ====
 function levenshteinDistance(a, b) {
   const matrix = [];
   for (let i = 0; i <= b.length; i++) matrix[i] = [i];
@@ -1053,11 +1689,7 @@ function levenshteinDistance(a, b) {
       if (b.charAt(i - 1) === a.charAt(j - 1)) {
         matrix[i][j] = matrix[i - 1][j - 1];
       } else {
-        matrix[i][j] = Math.min(
-          matrix[i - 1][j - 1] + 1,
-          matrix[i][j - 1] + 1,
-          matrix[i - 1][j] + 1
-        );
+        matrix[i][j] = Math.min(matrix[i - 1][j - 1] + 1, matrix[i][j - 1] + 1, matrix[i - 1][j] + 1);
       }
     }
   }
@@ -1078,11 +1710,7 @@ function alignWords(targetWords, spokenWords) {
       const w2 = spokenWords[j - 1].toLowerCase().replace(/[^\w]/g, '');
       const dist = levenshteinDistance(w1, w2);
       const cost = (dist === 0 || (w1.length > 3 && dist <= 1)) ? 0 : 1;
-      dp[i][j] = Math.min(
-        dp[i - 1][j] + 1,
-        dp[i][j - 1] + 1,
-        dp[i - 1][j - 1] + cost
-      );
+      dp[i][j] = Math.min(dp[i - 1][j] + 1, dp[i][j - 1] + 1, dp[i - 1][j - 1] + cost);
     }
   }
 
@@ -1104,15 +1732,12 @@ function alignWords(targetWords, spokenWords) {
       j--;
     }
   }
-  while (i > 0) {
-    result[i - 1] = false;
-    i--;
-  }
+  while (i > 0) { result[i - 1] = false; i--; }
   return result;
 }
 
 function initPronounce() {
-  pronounceDeck = [...state.vocab];
+  pronounceDeck = getReviewQueue();
   pronounceIdx = 0;
   isListening = false;
   renderPronounce();
@@ -1137,28 +1762,31 @@ function renderPronounce(transcriptResult = null) {
     const spokenWords = transcriptResult.trim().split(/\s+/);
     const matchResults = alignWords(words, spokenWords);
 
+    const isAllCorrect = matchResults.every(r => r === true);
+    processWordReview(cur.id, isAllCorrect);
+
     textMarkup = words.map((w, idx) => {
       const isOK = matchResults[idx];
-      return `<span class="px-2 py-1 rounded-xl text-lg font-extrabold shadow-2xs border ${isOK ? 'bg-emerald-100 text-emerald-700 border-emerald-300' : 'bg-rose-100 text-rose-700 border-rose-300'}">${w}</span>`;
+      return `<span class="px-2 py-1 rounded-xl text-lg font-extrabold shadow-2xs border ${isOK ? 'bg-emerald-100 text-emerald-700 border-emerald-300' : 'bg-rose-100 text-rose-700 border-rose-300'}">${escapeHtml(w)}</span>`;
     }).join(' ');
   } else {
-    textMarkup = `<h2 class="text-2xl font-extrabold text-slate-800">${targetText}</h2>`;
+    textMarkup = `<h2 class="text-2xl font-extrabold text-slate-800">${escapeHtml(targetText)}</h2>`;
   }
 
   wrap.innerHTML = `
     <div class="w-full p-5 rounded-3xl bg-white/80 border border-white shadow-xs space-y-2">
-      <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full">${cur.group || 'Tất cả'}</span>
+      <span class="text-[10px] font-bold text-amber-800 bg-amber-100 px-2.5 py-0.5 rounded-full">${escapeHtml(cur.group || 'Chưa phân nhóm')}</span>
       <div class="flex flex-wrap justify-center items-center gap-1.5 my-3">
         ${textMarkup}
       </div>
-      ${cur.phonetic ? `<p class="text-xs text-slate-400 font-medium">${cur.phonetic}</p>` : ''}
-      <p class="text-xs text-slate-600 font-bold mt-1">Nghĩa: ${cur.def}</p>
+      ${cur.phonetic ? `<p class="ipa-text text-sm text-slate-500">${escapeHtml(cur.phonetic)}</p>` : ''}
+      <p class="text-xs text-slate-600 font-bold mt-1">Nghĩa: ${escapeHtml(cur.def)}</p>
     </div>
 
     ${transcriptResult ? `
       <div class="p-3.5 rounded-2xl bg-amber-50/80 border border-amber-200/60 w-full text-xs text-slate-700 space-y-1">
         <span class="font-bold text-amber-900 block">Trình duyệt nhận diện được:</span>
-        <p class="italic font-semibold text-slate-800">"${transcriptResult}"</p>
+        <p class="italic font-semibold text-slate-800">"${escapeHtml(transcriptResult)}"</p>
       </div>
     ` : ''}
 
@@ -1185,14 +1813,13 @@ function renderPronounce(transcriptResult = null) {
 function toggleListening() {
   const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
   if (!SpeechRecognition) {
-    showToast('Trình duyệt của bạn không hỗ trợ SpeechRecognition!');
+    showToast('Trình duyệt không hỗ trợ nhận diện giọng nói!');
     return;
   }
 
   if (isListening) {
     if (recognition) recognition.stop();
     isListening = false;
-    renderPronounce();
     return;
   }
 
@@ -1201,29 +1828,14 @@ function toggleListening() {
   recognition.interimResults = false;
   recognition.maxAlternatives = 1;
 
-  recognition.onstart = () => {
-    isListening = true;
-    renderPronounce();
-  };
-
+  recognition.onstart = () => { isListening = true; renderPronounce(); };
   recognition.onresult = (event) => {
     const transcript = event.results[0][0].transcript;
     isListening = false;
     renderPronounce(transcript);
   };
-
-  recognition.onerror = (event) => {
-    isListening = false;
-    showToast('Lỗi nhận diện âm thanh!');
-    renderPronounce();
-  };
-
-  recognition.onend = () => {
-    if (isListening) {
-      isListening = false;
-      renderPronounce();
-    }
-  };
+  recognition.onerror = () => { isListening = false; showToast('Lỗi nhận diện âm thanh!'); renderPronounce(); };
+  recognition.onend = () => { if (isListening) { isListening = false; renderPronounce(); } };
 
   recognition.start();
 }
@@ -1236,7 +1848,7 @@ document.getElementById('cancelModal').onclick = () => modalOverlay.classList.ad
 
 function openWordModal(editId = null) {
   const datalist = document.getElementById('groupList');
-  datalist.innerHTML = state.groups.map(g => `<option value="${g}">`).join('');
+  datalist.innerHTML = state.groups.map(g => `<option value="${escapeHtml(g)}">`).join('');
 
   if (editId) {
     const item = state.vocab.find(v => v.id === editId);
@@ -1269,14 +1881,14 @@ document.getElementById('saveModal').onclick = () => {
   const def = document.getElementById('f-def').value.trim();
   const example = document.getElementById('f-example').value.trim();
   const status = document.getElementById('f-status').value;
-  let group = document.getElementById('f-group').value.trim() || 'Tất cả';
+  let group = document.getElementById('f-group').value.trim() || 'Chưa phân nhóm';
 
   if (!term || !def) {
     showToast('Vui lòng điền đủ từ vựng và nghĩa!');
     return;
   }
 
-  if (group !== 'Tất cả' && !state.groups.includes(group)) state.groups.push(group);
+  if (group !== 'Chưa phân nhóm' && !state.groups.includes(group)) state.groups.push(group);
 
   if (id) {
     const item = state.vocab.find(v => v.id === id);
@@ -1288,7 +1900,13 @@ document.getElementById('saveModal').onclick = () => {
     state.vocab.unshift({
       id: 'local_' + Date.now(),
       term, phonetic, def, example, status, group,
-      dateAdded: new Date().toISOString(), lastReviewed: new Date().toISOString(), reviewCount: 0, nextReviewDate: new Date().toISOString()
+      dateAdded: new Date().toISOString(),
+      reviewCount: 0,
+      nextReviewDate: new Date().toISOString(),
+      difficulty: 5,
+      stability: 1,
+      wrongCount: 0,
+      isLeech: false
     });
     showToast('Đã thêm từ vựng mới!');
   }
@@ -1298,9 +1916,12 @@ document.getElementById('saveModal').onclick = () => {
   renderVocabGrid();
 };
 
+setInterval(() => { refreshVisibleProgress(); }, 60000);
+
 window.onload = () => {
   loadState();
   switchView('vocab');
+  startReviewReminderChecks();
   syncFromExtension(false);
 };
 </script>
